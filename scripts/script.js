@@ -6,7 +6,7 @@ function setTimes() {
     var city = "Jahra";
     var country = "Kuwait";
     $.ajax({
-        url: `http://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=9`,
+        url: `https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=9`,
         dataType: 'json',
         success: function (results) {
             var milFajr = results['data']['timings']['Fajr'].substring(0, 5);
