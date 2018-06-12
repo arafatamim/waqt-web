@@ -4,10 +4,11 @@
   "description": "Displays current prayer times",
   "lang": "en-US",
   "start_url": "https://arafatamim.github.io/prayer-times-pwa",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#FF8E00",
-  "background-color": "#FF8E00",
+  "background_color": "#FF8E00",
   "icons": [{
       "src": "/icons/android-icon-36x36.png",
       "sizes": "36x36",
