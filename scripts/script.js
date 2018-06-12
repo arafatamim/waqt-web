@@ -1,10 +1,13 @@
 $(document).ready(function () {
-    setTimes();
+    $.getJSON("https://ip-api.io/json/", (results) => {
+        var city = results['city'];
+        var country = results['country_name'];
+        console.log(city + country);
+        setTimes(city, country);
+    });
 });
 
-function setTimes() {
-    var city = "Jahra";
-    var country = "Kuwait";
+function setTimes(city, country) {
     $.ajax({
         url: `https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=9`,
         dataType: 'json',
