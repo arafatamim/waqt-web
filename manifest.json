@@ -3,7 +3,7 @@
   "short_name": "Prayer Times",
   "description": "Displays current prayer times",
   "lang": "en-US",
-  "start_url": "/prayer-times-pwa",
+  "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#FF8E00",
