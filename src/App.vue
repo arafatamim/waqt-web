@@ -1,9 +1,7 @@
 <template>
-  <div>
-    <div id="headerBox">
-      <div id="headerText">Prayer Times</div>
-      <div id="headerIcon"></div>
-    </div>
+  <div id="bossContainer">
+    <spinner v-show="settings.loader.loading"/>
+    <headerbox @showDialog="settings.dialog=true;"/>
     <div class="contentBoxes">
       <div class="contentBox">
         <div class="divWaqt" id="divWaqt1">
@@ -47,11 +45,35 @@
         </div>
       </div>
     </div>
+    <snackbar v-show="settings.snackbar" @reloadTimes="getTimes()"/>
+    <transition name="fade">
+      <settings
+        v-if="settings.dialog"
+        :city="settings.city"
+        :country="settings.country"
+        :format="settings.format"
+        :localtime="localTime"
+        :timezone="timezone"
+        @updateParameters="updateSettings"
+        @closeWithoutSaving="settings.dialog=false"
+      />
+    </transition>
   </div>
 </template>
 
 <script>
+import snackbar from "@/components/snackbar.vue";
+import headerbox from "@/components/headerbox.vue";
+import settings from "@/components/settings.vue";
+import spinner from "@/components/spinner.vue";
+
 export default {
+  components: {
+    snackbar,
+    headerbox,
+    settings,
+    spinner
+  },
   data() {
     return {
       times: {
@@ -72,12 +94,49 @@ export default {
         format: "h:mm A",
         snackbar: false,
         dialog: false,
-        darkTheme: true
+        darkTheme: true,
+        loader: {
+          loading: false
+        }
       },
       currentWaqt: "nothing here"
     };
   },
-  created(){
+  created() {
+    axios.interceptors.request.use(
+      config => {
+        this.settings.loader.loading = true;
+        return config;
+      },
+      error => {
+        this.settings.snackbar = true;
+        this.settings.loader.loading = false;
+        return Promise.reject(error);
+      }
+    );
+    axios.interceptors.response.use(
+      response => {
+        this.settings.loader.loading = false;
+        // this.settings.snackbar = true;
+        return response;
+      },
+      error => {
+        this.settings.loader.loading = false;
+        this.settings.snackbar = true;
+        return Promise.reject(error);
+      }
+    );
+    if (localStorage.getItem("city") != null) {
+      this.settings.city = localStorage.getItem("city");
+      this.settings.country = localStorage.getItem("country");
+      this.settings.format = localStorage.getItem("format");
+    } else {
+      this.settings.city = "Oslo";
+      this.settings.country = "Norway";
+      this.settings.format = "h:mm A";
+    }
+  },
+  beforeMount() {
     this.getTimes();
   },
   methods: {
@@ -143,17 +202,36 @@ export default {
           } else if (unixNow < unixIsha && unixNow > unixMaghrib) {
             this.currentWaqt = "Isha";
           }
+
+          this.settings.snackbar = false;
+          this.settings.loader.loading = false;
         })
         .catch(function(error) {
           if (error) {
-            this.settings.snackbar = true;
             console.error(error);
-            console.log(this.settings);
           }
         });
     },
-    getLocation(){
-        this.$axios
+    updateSettings(parameters) {
+      if (
+        parameters.cityName != this.settings.city ||
+        parameters.countryName != this.settings.country ||
+        parameters.timeFormat != this.settings.format
+      ) {
+        this.settings.city = parameters.cityName;
+        this.settings.country = parameters.countryName;
+        this.settings.format = parameters.timeFormat;
+        this.settings.dialog = false;
+        this.getTimes();
+        localStorage.setItem("format", parameters.timeFormat);
+        localStorage.setItem("city", parameters.cityName);
+        localStorage.setItem("country", parameters.countryName);
+      } else {
+        this.settings.dialog = false;
+      }
+    },
+    getLocation() {
+      this.$axios
         .get("http://api.ipstack.com/check", {
           params: {
             access_key: "13c82c1744ce9416a977d1f350c17cb9", // i dont care
@@ -161,104 +239,13 @@ export default {
           }
         })
         .then(response => {
-          this.settings.city = response.data.city,
-          this.settings.country = response.data.country_name;
+          (this.settings.city = response.data.city),
+            (this.settings.country = response.data.country_name);
         });
     }
   }
 };
 </script>
 
-<style lang="scss">
-@import url("https://fonts.googleapis.com/css?family=Poppins:400,600");
-$base-font: "Poppins", "Liberation Sans", sans-serif;
-
-body {
-  background-color: #222;
-}
-#headerBox {
-  margin: 30px 75px 40px 75px;
-  display: inline-table;
-}
-#headerText {
-  font-family: $base-font;
-  font-size: 25pt;
-  color: #eee;
-  border-bottom: 3px dotted #666;
-  cursor: pointer;
-}
-#headerText:hover {
-  border-bottom: 3px solid #666;
-}
-#headerIcon {
-  font-family: $base-font;
-  font-size: 25pt;
-}
-
-.contentBoxes {
-  // margin: 0px 0px 25px 25px;
-  display: grid;
-  grid-template-columns: repeat(3, 33.3%);
-  grid-template-rows: repeat(2, 220px);
-}
-.contentBox {
-  margin: 10px;
-  padding: 25px;
-  color: white;
-  // height: 200px;
-  // width: 370px;
-  border-radius: 20px;
-  box-shadow: 30px 30px 80px rgba($color: black, $alpha: 0.5);
-}
-.contentBox:nth-child(1) {
-  background: linear-gradient(315deg, #0cbaba 0%, #380036 74%);
-}
-.contentBox:nth-child(2) {
-  color: #333;
-  background: linear-gradient(315deg, #20bf55 0%, #01baef 74%);
-}
-.contentBox:nth-child(3) {
-  color: #333;
-  background: linear-gradient(315deg, #f9d29d 0%, #ffd8cb 74%);
-}
-.contentBox:nth-child(4) {
-  color: #333;
-  background: linear-gradient(315deg, #fce043 0%, #fb7ba2 74%);
-}
-.contentBox:nth-child(5) {
-  background: linear-gradient(315deg, #d4418e 0%, #0652c5 74%);
-}
-.contentBox:nth-child(6) {
-  background: linear-gradient(315deg, #537895 0%, #09203f 74%);
-}
-.waqtName {
-  font-family: $base-font;
-  font-size: 20pt;
-}
-
-.waqtTime {
-  margin-top: 20px;
-  font-family: $base-font;
-  font-size: 40pt;
-}
-
-@media (max-width: 800px) {
-  .contentBoxes {
-    grid-template-columns: repeat(2, 50%);
-    grid-template-rows: repeat(3, 220px);
-  }
-}
-@media (max-width: 575px) {
-  .contentBoxes {
-    grid-template-columns: 100%;
-    grid-template-rows: repeat(6, 220px);
-  }
-  #headerBox {
-    margin: 30px 50px 10px 50px;
-    display: block;
-  }
-  #headerText {
-    text-align: center;
-  }
-}
+<style lang="scss" src="../styles/style.scss">
 </style>
