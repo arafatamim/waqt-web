@@ -40,7 +40,11 @@
           An app to display current prayer times for the selected location.
           <br>Made with ♥️ by Tamim Arafat.
           <br>
-          <a href="http://github.com/arafatamim" target="_blank" class="aboutLink">Source on GitHub</a>
+          <a href="http://github.com/arafatamim/waqt-web" target="_blank" class="aboutLink"><font-awesome-icon :icon="['fab', 'github']" /> Source on GitHub</a>
+          <br><br>
+          <!-- &nbsp;|&nbsp;
+          <a href="http://github.com/arafatamim/waqt-web" target="_blank" class="aboutLink"><font-awesome-icon :icon="['fas', 'coffee']" /> Support me :-)</a> -->
+          <a href='https://ko-fi.com/Q5Q1TLM1' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=2' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
         </div>
       </div>
     </div>

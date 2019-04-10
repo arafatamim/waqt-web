@@ -1,6 +1,6 @@
 <template>
     <div id="headerBox">
-        <div id="headerText">Waqt Web</div>
+        <div id="headerText">Waqt</div>
         <font-awesome-icon id='headerSettings' icon="cog" @click="$emit('showDialog')"/>
     </div>
 </template>
