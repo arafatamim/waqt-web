@@ -24,6 +24,7 @@ export default {
   height: 100vh;
   background-color: #000;
   opacity: 0.4;
+  z-index: 1000;
 }
 @keyframes donut-spin {
   0% {
@@ -48,6 +49,7 @@ export default {
   top:50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 1001;
 }
 .fade-enter-active, .fade-leave-active {
   transition: opacity .3s;

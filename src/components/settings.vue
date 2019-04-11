@@ -78,8 +78,8 @@ export default {
   top: 0;
   left: 0;
   position: fixed;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background-color: #000;
   opacity: 0.4;
   z-index: 1000;

@@ -1,51 +1,6 @@
 <template>
   <div id="bossContainer">
     <spinner v-show="settings.loader.loading"/>
-    <headerbox @showDialog="settings.dialog=true;"/>
-    <div class="contentBoxes">
-      <div class="contentBox">
-        <div class="divWaqt" id="divWaqt1">
-          <div class="waqtName">Fajr</div>
-          <div class="waqtTime" id="waqtTime1">{{times.fajr}}</div>
-        </div>
-      </div>
-
-      <div class="contentBox">
-        <div class="divWaqt" id="divWaqt2">
-          <div class="waqtName">Sunrise</div>
-          <div class="waqtTime" id="waqtTime2">{{times.sunrise}}</div>
-        </div>
-      </div>
-
-      <div class="contentBox">
-        <div class="divWaqt" id="divWaqt3">
-          <div class="waqtName">Dhuhr</div>
-          <div class="waqtTime" id="waqtTime3">{{times.dhuhr}}</div>
-        </div>
-      </div>
-
-      <div class="contentBox">
-        <div class="divWaqt" id="divWaqt4">
-          <div class="waqtName">Asr</div>
-          <div class="waqtTime" id="waqtTime4">{{times.asr}}</div>
-        </div>
-      </div>
-
-      <div class="contentBox">
-        <div class="divWaqt" id="divWaqt5">
-          <div class="waqtName">Maghrib</div>
-          <div class="waqtTime" id="waqtTime5">{{times.maghrib}}</div>
-        </div>
-      </div>
-
-      <div class="contentBox">
-        <div class="divWaqt" id="divWaqt6">
-          <div class="waqtName">Isha</div>
-          <div class="waqtTime" id="waqtTime6">{{times.isha}}</div>
-        </div>
-      </div>
-    </div>
-    <snackbar v-show="settings.snackbar" @reloadTimes="getTimes()"/>
     <transition name="fade">
       <settings
         v-if="settings.dialog"
@@ -58,6 +13,53 @@
         @closeWithoutSaving="settings.dialog=false"
       />
     </transition>
+    <div id="secondBossContainer">
+      <headerbox @showDialog="settings.dialog=true;"/>
+      <div class="contentBoxes">
+        <div class="contentBox" :class="{ active: currentWaqt=='Fajr' }">
+          <div class="divWaqt" id="divWaqt1">
+            <div class="waqtName">Fajr</div>
+            <div class="waqtTime" id="waqtTime1">{{times.fajr}}</div>
+          </div>
+        </div>
+
+        <div class="contentBox" :class="{ active: currentWaqt=='Sunrise' }">
+          <div class="divWaqt" id="divWaqt2">
+            <div class="waqtName">Sunrise</div>
+            <div class="waqtTime" id="waqtTime2">{{times.sunrise}}</div>
+          </div>
+        </div>
+
+        <div class="contentBox" :class="{ active: currentWaqt=='Dhuhr' }">
+          <div class="divWaqt" id="divWaqt3">
+            <div class="waqtName">Dhuhr</div>
+            <div class="waqtTime" id="waqtTime3">{{times.dhuhr}}</div>
+          </div>
+        </div>
+
+        <div class="contentBox" :class="{ active: currentWaqt=='Asr' }">
+          <div class="divWaqt" id="divWaqt4">
+            <div class="waqtName">Asr</div>
+            <div class="waqtTime" id="waqtTime4">{{times.asr}}</div>
+          </div>
+        </div>
+
+        <div class="contentBox" :class="{ active: currentWaqt=='Maghrib' }">
+          <div class="divWaqt" id="divWaqt5">
+            <div class="waqtName">Maghrib</div>
+            <div class="waqtTime" id="waqtTime5">{{times.maghrib}}</div>
+          </div>
+        </div>
+
+        <div class="contentBox" :class="{ active: currentWaqt=='Isha' }">
+          <div class="divWaqt" id="divWaqt6">
+            <div class="waqtName">Isha</div>
+            <div class="waqtTime" id="waqtTime6">{{times.isha}}</div>
+          </div>
+        </div>
+      </div>
+      <snackbar v-show="settings.snackbar" @reloadTimes="getTimes()"/>
+    </div>
   </div>
 </template>
 
@@ -99,7 +101,7 @@ export default {
           loading: false
         }
       },
-      currentWaqt: "nothing here"
+      currentWaqt: null
     };
   },
   created() {
@@ -231,17 +233,21 @@ export default {
       }
     },
     getLocation() {
-      this.$axios
-        .get("http://api.ipstack.com/check", {
-          params: {
-            access_key: "13c82c1744ce9416a977d1f350c17cb9", // i dont care
-            format: 1
-          }
-        })
-        .then(response => {
-          (this.settings.city = response.data.city),
-            (this.settings.country = response.data.country_name);
-        });
+      // this.$axios
+      //   .get("http://api.ipstack.com/check", {
+      //     params: {
+      //       access_key: "13c82c1744ce9416a977d1f350c17cb9", // i dont care
+      //       format: 1
+      //     }
+      //   })
+      //   .then(response => {
+      //     (this.settings.city = response.data.city),
+      //       (this.settings.country = response.data.country_name);
+      //   });
+      navigator.geolocation.getCurrentPosition(location => {
+        console.log(location.coords.latitude);
+        console.log(location.coords.longitude);
+      });
     }
   }
 };

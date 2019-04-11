@@ -6,7 +6,6 @@ body {
 }
 
 .contentBoxes {
-  // margin: 0px 0px 25px 25px;
   display: grid;
   grid-template-columns: repeat(3, 33.3%);
   grid-template-rows: repeat(2, 220px);
@@ -15,8 +14,6 @@ body {
   margin: 10px;
   padding: 25px;
   color: white;
-  // height: 200px;
-  // width: 370px;
   border-radius: 20px;
   box-shadow: 30px 30px 80px rgba($color: black, $alpha: 0.5);
 }
@@ -42,27 +39,44 @@ body {
 .contentBox:nth-child(6) {
   background: linear-gradient(315deg, #537895 0%, #09203f 74%);
 }
-.waqtName {
-  font-family: $base-font;
-  font-size: 20pt;
+.divWaqt {
+  .waqtName {
+    font-family: $base-font;
+    font-size: 20pt;
+  }
+
+  .waqtTime {
+    margin-top: 20px;
+    font-family: $base-font;
+    font-size: 40pt;
+    white-space: nowrap;
+    overflow: auto;
+    // text-overflow: ellipsis;
+  }
 }
 
-.waqtTime {
-  margin-top: 20px;
-  font-family: $base-font;
-  font-size: 40pt;
-}
-
-.fade-enter-active, .fade-leave-active{
+.fade-enter-active,
+.fade-leave-active {
   transition: all 0.3s ease;
 }
-.fade-enter{
+.fade-enter {
   opacity: 100;
 }
-.fade-leave-to{
+.fade-leave-to {
   opacity: 0;
 }
-
+@keyframes flash{
+  0%{
+    border-color: rgba($color: white, $alpha: 0.3);
+  }
+  100%{
+    border-color: rgba($color: white, $alpha: 1)
+  }
+}
+.active{
+  border: 5px solid #ccc;
+  animation: flash 1.5s infinite alternate;
+}
 @media (max-width: 800px) {
   .contentBoxes {
     grid-template-columns: repeat(2, 50%);
@@ -83,8 +97,13 @@ body {
   }
 }
 
-@media (min-width: 768px){
-  #bossContainer{
+@media (min-width: 825px) {
+  #secondBossContainer {
     padding: 3% 5%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
   }
 }

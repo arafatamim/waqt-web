@@ -1,2 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:400,600');
 $base-font: "Poppins", "Liberation Sans", sans-serif;
+
+div{
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
