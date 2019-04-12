@@ -86,9 +86,9 @@ export default {
         maghrib: "...",
         isha: "..."
       },
-      localTime: "Loading...",
-      timezone: "Loading...",
-      method: "Loading...",
+      localTime: "...",
+      timezone: "...",
+      method: "...",
       settings: {
         city: "Dhaka",
         country: "Bangladesh",
@@ -101,7 +101,11 @@ export default {
           loading: false
         }
       },
-      currentWaqt: null
+      currentWaqt: null,
+      coordinates: {
+        latitude: null,
+        longitude: null
+      }
     };
   },
   created() {
@@ -142,7 +146,8 @@ export default {
     this.getTimes();
   },
   methods: {
-    getTimes() {
+    getTimewllaa() {
+      //TODO : Delete this
       this.$axios
         .get("https://api.aladhan.com/v1/timingsByCity", {
           params: {
@@ -214,39 +219,63 @@ export default {
           }
         });
     },
+    getTimes() {
+      this.getLocation();
+      const adhan = require("adhan");
+      var date = new Date();
+      var coordinates = new adhan.Coordinates(
+        this.coordinates.latitude,
+        this.coordinates.longitude
+      );
+      var params = adhan.CalculationMethod.Karachi();
+      params.madhab = adhan.Madhab.Hanafi;
+      var prayerTimes = new adhan.PrayerTimes(coordinates, date, params);
+      var formattedTime = adhan.Date.formattedTime;
+      let milFajr = formattedTime(prayerTimes.fajr, 0, "24h");
+      let milSunrise = formattedTime(prayerTimes.sunrise, 0, "24h");
+      let milDhuhr = formattedTime(prayerTimes.dhuhr, 0, "24h");
+      let milAsr = formattedTime(prayerTimes.asr, 0, "24h");
+      let milMaghrib = formattedTime(prayerTimes.maghrib, 0, "24h");
+      let milIsha = formattedTime(prayerTimes.isha, 0, "24h");
+
+      this.times.fajr = this.moment(milFajr, "HH:mm").format(
+        this.settings.format
+      );
+      this.times.sunrise = this.moment(milSunrise, "HH:mm").format(
+        this.settings.format
+      );
+      this.times.dhuhr = this.moment(milDhuhr, "HH:mm").format(
+        this.settings.format
+      );
+      this.times.asr = this.moment(milAsr, "HH:mm").format(
+        this.settings.format
+      );
+      this.times.maghrib = this.moment(milMaghrib, "HH:mm").format(
+        this.settings.format
+      );
+      this.times.isha = this.moment(milIsha, "HH:mm").format(
+        this.settings.format
+      );
+
+      console.log(this.times.fajr);
+      console.log(this.times.isha);
+      
+      
+    },
     updateSettings(parameters) {
-      if (
-        parameters.cityName != this.settings.city ||
-        parameters.countryName != this.settings.country ||
-        parameters.timeFormat != this.settings.format
-      ) {
-        this.settings.city = parameters.cityName;
-        this.settings.country = parameters.countryName;
-        this.settings.format = parameters.timeFormat;
-        this.settings.dialog = false;
-        this.getTimes();
-        localStorage.setItem("format", parameters.timeFormat);
-        localStorage.setItem("city", parameters.cityName);
-        localStorage.setItem("country", parameters.countryName);
-      } else {
-        this.settings.dialog = false;
-      }
+      this.settings.city = parameters.cityName;
+      this.settings.country = parameters.countryName;
+      this.settings.format = parameters.timeFormat;
+      this.settings.dialog = false;
+      this.getTimes();
+      localStorage.setItem("format", parameters.timeFormat);
+      localStorage.setItem("city", parameters.cityName);
+      localStorage.setItem("country", parameters.countryName);
     },
     getLocation() {
-      // this.$axios
-      //   .get("http://api.ipstack.com/check", {
-      //     params: {
-      //       access_key: "13c82c1744ce9416a977d1f350c17cb9", // i dont care
-      //       format: 1
-      //     }
-      //   })
-      //   .then(response => {
-      //     (this.settings.city = response.data.city),
-      //       (this.settings.country = response.data.country_name);
-      //   });
       navigator.geolocation.getCurrentPosition(location => {
-        console.log(location.coords.latitude);
-        console.log(location.coords.longitude);
+        this.coordinates.latitude = location.coords.latitude;
+        this.coordinates.longitude = location.coords.longitude;
       });
     }
   }
