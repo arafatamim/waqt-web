@@ -1,7 +1,137 @@
-@import url('https://fonts.googleapis.com/css?family=Poppins:400,600');
+@import url("https://fonts.googleapis.com/css?family=Poppins:400,600");
+
+$text-color: (
+  light: #333,
+  dark: #eee
+);
+$bg-color: (
+  light: #eee,
+  dark: #222
+);
+
 $base-font: "Poppins", "Liberation Sans", sans-serif;
 
-div{
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
+$ui-theme: "dark"; // 'light' or 'dark'
+
+$theme: (
+  text:
+    map-get(
+      $map: $text-color,
+      $key: $ui-theme
+    ),
+  bg:
+    map-get(
+      $map: $bg-color,
+      $key: $ui-theme
+    )
+);
+
+$main-bg: map-get(
+  $map: $theme,
+  $key: bg
+);
+
+$fajr-style: (
+  background: linear-gradient(315deg, #0cbaba 0%, #380036 74%),
+  foreground: map-get($text-color, dark)
+);
+$sunrise-style: (
+  background: linear-gradient(315deg, #20bf55 0%, #01baef 74%),
+  foreground: map-get($text-color, light)
+);
+$dhuhr-style: (
+  background: linear-gradient(315deg, #f9d29d 0%, #ffd8cb 74%),
+  foreground: map-get($text-color, light)
+);
+$asr-style: (
+  background: linear-gradient(315deg, #fce043 0%, #fb7ba2 74%),
+  foreground: map-get($text-color, light)
+);
+$maghrib-style: (
+  background: linear-gradient(315deg, #d4418e 0%, #0652c5 74%),
+  foreground: map-get($text-color, dark)
+);
+$isha-style: (
+  background: linear-gradient(315deg, #537895 0%, #09203f 74%),
+  foreground: map-get($text-color, dark)
+);
+
+$icon-button-color: lighten(
+  map-get(
+    $map: $theme,
+    $key: text
+  ),
+  15%
+);
+
+div {
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+%controlStyles {
+  @if $ui-theme == "dark" {
+    background-color: lighten(map-get($map: $theme, $key: bg), 5%);
+  } @else {
+    background-color: darken(map-get($map: $theme, $key: bg), 5%);
+  }
+  padding: 5px 15px;
+  font-size: 11pt;
+  font-family: $base-font;
+  border: none;
+  border-radius: 100px;
+  color: map-get($map: $theme, $key: text);
+  outline: none;
+  &:hover {
+    @if $ui-theme == "dark" {
+      background-color: lighten(map-get($map: $theme, $key: bg), 10%);
+    } @else {
+      background-color: darken(map-get($map: $theme, $key: bg), 10%);
+    }
+  }
+  &:focus {
+    @if $ui-theme == "dark" {
+      background-color: lighten(map-get($map: $theme, $key: bg), 10%);
+    } @else {
+      background-color: darken(map-get($map: $theme, $key: bg), 10%);
+    }
+  }
+}
+button {
+  @extend %controlStyles;
+  cursor: pointer;
+}
+select {
+  @extend %controlStyles;
+  box-sizing: content-box;
+}
+input {
+  @extend %controlStyles;
+  @if $ui-theme == "dark" {
+    background-color: darken(map-get($map: $theme, $key: bg), 5%);
+  } @else {
+    background-color: darken(map-get($map: $theme, $key: bg), 10%);
+  }
+  width: 100%;
+  box-sizing: border-box;
+  &:hover {
+    @if $ui-theme == "dark" {
+      background-color: darken(map-get($map: $theme, $key: bg), 6%);
+    } @else {
+      background-color: darken(map-get($map: $theme, $key: bg), 15%);
+    }
+  }
+  &:focus {
+    @if $ui-theme == "dark" {
+      background-color: darken(map-get($map: $theme, $key: bg), 8%);
+    } @else {
+      background-color: darken(map-get($map: $theme, $key: bg), 20%);
+    }
+  }
+}
+.iconButton {
+  color: map-get($map: $theme, $key: text);
+  cursor: pointer;
+  &:hover {
+    color: lighten(map-get($map: $theme, $key: text), 10%);
+  }
 }

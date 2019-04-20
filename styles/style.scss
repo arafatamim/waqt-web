@@ -1,7 +1,7 @@
 @import "base";
 
 body {
-  background-color: #222;
+  background-color: $main-bg;
   margin: 0;
 }
 
@@ -15,34 +15,38 @@ body {
   padding: 25px;
   color: white;
   border-radius: 20px;
-  box-shadow: 30px 30px 80px rgba($color: black, $alpha: 0.5);
+  box-shadow: 0 0 0.5px rgba(#000, 0.1), 0 5px 8px rgba(#000, 0.15), 0 20px 20px rgba(#000, 0.2);
 }
 .contentBox:nth-child(1) {
-  background: linear-gradient(315deg, #0cbaba 0%, #380036 74%);
-  // border: 5px solid #bbb;
+  color: map-get($map: $fajr-style, $key: foreground);
+  background: map-get($map: $fajr-style, $key: background);
 }
 .contentBox:nth-child(2) {
-  color: #333;
-  background: linear-gradient(315deg, #20bf55 0%, #01baef 74%);
+  color: map-get($map: $sunrise-style, $key: foreground);
+  background: map-get($map: $sunrise-style, $key: background);
 }
 .contentBox:nth-child(3) {
-  color: #333;
-  background: linear-gradient(315deg, #f9d29d 0%, #ffd8cb 74%);
+  color: map-get($map: $dhuhr-style, $key: foreground);
+  background: map-get($map: $dhuhr-style, $key: background);
 }
 .contentBox:nth-child(4) {
-  color: #333;
-  background: linear-gradient(315deg, #fce043 0%, #fb7ba2 74%);
+  color: map-get($map: $asr-style, $key: foreground);
+  background: map-get($map: $asr-style, $key: background);
 }
 .contentBox:nth-child(5) {
-  background: linear-gradient(315deg, #d4418e 0%, #0652c5 74%);
+  color: map-get($map: $maghrib-style, $key: foreground);
+  background: map-get($map: $maghrib-style, $key: background);
 }
 .contentBox:nth-child(6) {
-  background: linear-gradient(315deg, #537895 0%, #09203f 74%);
+  color: map-get($map: $isha-style, $key: foreground);
+  background: map-get($map: $isha-style, $key: background);
 }
 .divWaqt {
   .waqtName {
     font-family: $base-font;
     font-size: 20pt;
+    white-space: nowrap;
+    overflow: auto;
   }
 
   .waqtTime {
@@ -53,6 +57,9 @@ body {
     overflow: auto;
     // text-overflow: ellipsis;
   }
+  // .nextWaqtTime {
+  //   font-size: 18pt;
+  // }
 }
 
 .fade-enter-active,
@@ -65,18 +72,19 @@ body {
 .fade-leave-to {
   opacity: 0;
 }
-@keyframes flash{
-  0%{
-    border-color: rgba($color: white, $alpha: 0.3);
+@keyframes flash {
+  0% {
+    border-color: rgba($color: #333, $alpha: 1);
   }
-  100%{
-    border-color: rgba($color: white, $alpha: 1)
+  100% {
+    border-color: rgba($color: #fff, $alpha: 1);
   }
 }
-.active{
+.active {
   border: 5px solid #ccc;
   animation: flash 1.5s infinite alternate;
 }
+
 @media (max-width: 800px) {
   .contentBoxes {
     grid-template-columns: repeat(2, 50%);

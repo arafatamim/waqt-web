@@ -21,4 +21,3 @@ yarn-error.log*
 *.sw*
 
 deploy.sh
-vue.config.js
