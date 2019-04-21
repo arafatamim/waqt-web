@@ -54,19 +54,24 @@
             appear
           >
             <div v-if="cityFinder.show" class="cityFinder">
-              <input type="text" id="txtAddress" name="address" placeholder="Enter your city...">
+              <input
+                type="text"
+                id="txtAddress"
+                v-model.lazy="cityFinder.term"
+                v-debounce="750"
+                name="address"
+                placeholder="Enter your city..."
+              >
               <ul>
                 <li
                   v-for="(name,i) in locations"
                   :key="i"
                   class="addressNames"
-                  @click="setLocation()"
+                  @click="setLocation(name)"
                 >
-                  {{name.city}}, {{name.country}}
+                  {{name.display_name}}
                   <br>
-                  <span
-                    class="cityCoords"
-                  >{{name.coordinates.latitude}}, {{name.coordinates.longitude}}</span>
+                  <span class="cityCoords">{{name.lat}}, {{name.lon}}</span>
                 </li>
               </ul>
             </div>
@@ -109,6 +114,8 @@
 </template>
 
 <script>
+import debounce from 'v-debounce';
+
 export default {
     props: ['city', 'country', 'tformat', 'localtime', 'timezone', 'coordinates'],
     data() {
@@ -120,62 +127,28 @@ export default {
                 coords: this.coordinates
             },
             cityFinder: {
-                show: false
+                show: false,
+                term: ''
             },
-            locations: [
-                {
-                    city: 'Oslo',
-                    country: 'Norway',
-                    coordinates: {
-                        latitude: '16.5656',
-                        longitude: '30.1253'
-                    }
-                },
-                {
-                    city: 'Berlin',
-                    country: 'Germany',
-                    coordinates: {
-                        latitude: '16.5656',
-                        longitude: '30.1253'
-                    }
-                },
-                {
-                    city: 'Berlin',
-                    country: 'Germany',
-                    coordinates: {
-                        latitude: '16.5656',
-                        longitude: '30.1253'
-                    }
-                },
-                {
-                    city: 'Berlin',
-                    country: 'Germany',
-                    coordinates: {
-                        latitude: '16.5656',
-                        longitude: '30.1253'
-                    }
-                },
-                {
-                    city: 'Berlin',
-                    country: 'Germany',
-                    coordinates: {
-                        latitude: '16.5656',
-                        longitude: '30.1253'
-                    }
-                }
-            ]
-        }
+            locations: []
+        };
     },
     methods: {
         closeAndUpdate(parameters) {
-            this.$emit('updateParameters', this.parameters)
+            this.$emit('updateParameters', this.parameters);
         },
-        setLocation() {
-            this.cityFinder.show = false
+        setLocation(name) {
+            this.cityFinder.show = false;
+            this.parameters.cityName = name.address.city;
+            this.parameters.countryName = name.address.country;
+            this.parameters.coords = {
+                latitude: name.lat,
+                longitude: name.lon
+            };
         },
         cityFinderBeforeEnter: function(el) {
-            el.style.opacity = 0
-            el.style.display = 'inline-block'
+            el.style.opacity = 0;
+            el.style.display = 'inline-block';
         },
         cityFinderEnter: function(el, done) {
             Velocity(
@@ -183,7 +156,7 @@ export default {
                 { opacity: 1, maxHeight: ['200px', 0] },
                 { duration: 150, display: 'inline-block', easing: 'ease' },
                 { complete: done }
-            )
+            );
         },
         cityFinderLeave: function(el, done) {
             Velocity(
@@ -191,28 +164,61 @@ export default {
                 { opacity: 0, maxHeight: 0 },
                 { duration: 150, display: 'none' },
                 { complete: done }
-            )
+            );
         },
         bgBeforeEnter(el) {
-            el.style.opacity = 0
+            el.style.opacity = 0;
         },
         bgEnter(el, done) {
-            Velocity(el, { opacity: 0.4 }, { duration: 300 }, { complete: done })
+            Velocity(el, { opacity: 0.4 }, { duration: 300 }, { complete: done });
         },
         bgLeave(el, done) {
-            Velocity(el, { opacity: 0 }, { duration: 3000 }, { complete: done })
+            Velocity(el, { opacity: 0 }, { duration: 3000 }, { complete: done });
         },
         boxBeforeEnter(el) {
-            el.style.opacity = 0
+            el.style.opacity = 0;
         },
         boxEnter(el, done) {
-            Velocity(el, { opacity: 1 }, { duration: 300, display: 'block' }, { complete: done })
+            Velocity(el, { opacity: 1 }, { duration: 300, display: 'block' }, { complete: done });
         },
         boxLeave(el, done) {
-            Velocity(el, { opacity: 0 }, { duration: 3000, display: 'none' }, { complete: done })
+            Velocity(el, { opacity: 0 }, { duration: 3000, display: 'none' }, { complete: done });
         }
+    },
+    watch: {
+        'cityFinder.term': function() {
+            if (this.cityFinder.term != '') {
+                this.$axios
+                    .get('https://eu1.locationiq.com/v1/search.php', {
+                        params: {
+                            key: '',
+                            q: this.cityFinder.term,
+                            format: 'json',
+                            limit: 5,
+                            addressdetails: 1
+                        }
+                    })
+                    .then(response => {
+                        // response.data.forEach(entry => {
+                        //     this.locations.push({
+                        //         address: entry.display_name,
+                        //         city: entry.address.city,
+                        //         country: entry.address.country,
+                        //         coordinates: {
+                        //             latitude: entry.lat,
+                        //             longitude: entry.lon
+                        //         }
+                        //     });
+                        // });
+                        this.locations = response.data;
+                    });
+            }
+        }
+    },
+    directives: {
+        debounce
     }
-}
+};
 </script>
 
 <style lang='scss' scoped>
