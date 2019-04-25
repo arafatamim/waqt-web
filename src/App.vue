@@ -128,18 +128,21 @@ export default {
         };
     },
     created() {
-        if (localStorage.getItem('city') != null) {
-            this.settings.city = localStorage.getItem('city');
-            this.settings.country = localStorage.getItem('country');
+        // if (localStorage.getItem('city') != null) {
+        //     this.settings.city = localStorage.getItem('city');
+        //     this.settings.country = localStorage.getItem('country');
+        //     this.settings.timeFormat = localStorage.getItem('timeFormat');
+        //     this.coordinates.latitude = localStorage.getItem('latitude');
+        //     this.coordinates.longitude = localStorage.getItem('longitude');
+        // } else {
+        //     this.getLocation();
+        //     this.settings.timeFormat = 'h:mm A';
+        // }
+        if (localStorage.getItem('timeFormat') != null) {
             this.settings.timeFormat = localStorage.getItem('timeFormat');
-            this.coordinates.latitude = localStorage.getItem('latitude');
-            this.coordinates.longitude = localStorage.getItem('longitude');
         } else {
-            this.settings.city = 'Oslo';
-            this.settings.country = 'Norway';
+            this.getLocation();
             this.settings.timeFormat = 'h:mm A';
-            this.coordinates.latitude = '59.972';
-            this.coordinates.longitude = '10.775';
         }
     },
     beforeMount() {
@@ -147,10 +150,29 @@ export default {
     },
     methods: {
         getLocation() {
-            navigator.geolocation.getCurrentPosition(location => {
-                this.coordinates.latitude = location.coords.latitude;
-                this.coordinates.longitude = location.coords.longitude;
-            });
+            navigator.geolocation.getCurrentPosition(
+                location => {
+                    this.coordinates.latitude = location.coords.latitude;
+                    this.coordinates.longitude = location.coords.longitude;
+                },
+                err => {
+                    console.log(err);
+                    console.log('Fallback to IP geolocation');
+                    this.$axios
+                        .get('https://ip-api.io/json/')
+                        .then(response => {
+                            this.coordinates.latitude = response.data.lat;
+                            this.coordinates.longitude = response.data.lon;
+                            this.settings.city = response.data.city;
+                            this.settings.country = response.data.country;
+                            this.settings.snackbar = false;
+                        })
+                        .catch(error => {
+                            this.settings.snackbar = true;
+                            console.log(error);
+                        });
+                }
+            );
         },
         getTimes: function() {
             const adhan = require('adhan');
@@ -166,19 +188,19 @@ export default {
             params.madhab = adhan.Madhab.Hanafi;
             var prayerTimes = new adhan.PrayerTimes(coordinates, date, params);
             var formattedTime = adhan.Date.formattedTime;
-            let UTCOffset = moment
-                .duration(
-                    moment()
-                        .parseZone()
-                        .format('Z')
-                )
-                .asHours();
-            var milFajr = formattedTime(prayerTimes.fajr, UTCOffset, '24h');
-            var milSunrise = formattedTime(prayerTimes.sunrise, UTCOffset, '24h');
-            var milDhuhr = formattedTime(prayerTimes.dhuhr, UTCOffset, '24h');
-            var milAsr = formattedTime(prayerTimes.asr, UTCOffset, '24h');
-            var milMaghrib = formattedTime(prayerTimes.maghrib, UTCOffset, '24h');
-            var milIsha = formattedTime(prayerTimes.isha, UTCOffset, '24h');
+            // let UTCOffset = moment
+            //     .duration(
+            //         moment()
+            //             .parseZone()
+            //             .format('Z')
+            //     )
+            //     .asHours();
+            var milFajr = formattedTime(prayerTimes.fajr, 0, '24h');
+            var milSunrise = formattedTime(prayerTimes.sunrise, 0, '24h');
+            var milDhuhr = formattedTime(prayerTimes.dhuhr, 0, '24h');
+            var milAsr = formattedTime(prayerTimes.asr, 0, '24h');
+            var milMaghrib = formattedTime(prayerTimes.maghrib, 0, '24h');
+            var milIsha = formattedTime(prayerTimes.isha, 0, '24h');
 
             this.times.fajr = moment(milFajr, 'HH:mm').format(this.settings.timeFormat);
             this.times.sunrise = moment(milSunrise, 'HH:mm').format(this.settings.timeFormat);
@@ -221,23 +243,25 @@ export default {
                 this.nextWaqt = 'Isha';
                 this.timeToNextWaqt = moment.unix(unixIsha).fromNow();
             }
+
+            this.settings.snackbar = false;
         },
         updateSettings(parameters) {
-            this.settings.city = parameters.cityName;
-            this.settings.country = parameters.countryName;
+            // this.settings.city = parameters.cityName;
+            // this.settings.country = parameters.countryName;
+            // this.coordinates = parameters.coords;
             this.settings.timeFormat = parameters.timeFormat;
-            this.coordinates = parameters.coords;
             this.settings.dialog = false;
             this.getTimes();
             localStorage.setItem('timeFormat', parameters.timeFormat);
-            localStorage.setItem('city', parameters.cityName);
-            localStorage.setItem('country', parameters.countryName);
-            localStorage.setItem('latitude', parameters.coords.latitude);
-            localStorage.setItem('longitude', parameters.coords.longitude);
+            location.reload();
+            // localStorage.setItem('city', parameters.cityName);
+            // localStorage.setItem('country', parameters.countryName);
+            // localStorage.setItem('latitude', parameters.coords.latitude);
+            // localStorage.setItem('longitude', parameters.coords.longitude);
         }
     }
 };
 </script>
 
-<style lang="scss" src="../styles/style.scss">
-</style>
+<style lang="scss" src="../styles/style.scss"></style>

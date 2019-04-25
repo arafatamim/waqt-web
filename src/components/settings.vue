@@ -38,45 +38,6 @@
                       <option value="shia">Shia Ithna Ansari, Leva Research Institute, Tehran</option>
                     </select>
           </div>-->
-          <div class="control1">
-            {{parameters.cityName}}, {{parameters.countryName}}
-            <button
-              id="btnAddress"
-              @click="cityFinder.show=!cityFinder.show"
-            >Change address...</button>
-          </div>
-
-          <transition
-            v-on:before-enter="cityFinderBeforeEnter"
-            v-on:enter="cityFinderEnter"
-            v-on:leave="cityFinderLeave"
-            v-bind:css="false"
-            appear
-          >
-            <div v-if="cityFinder.show" class="cityFinder">
-              <input
-                type="text"
-                id="txtAddress"
-                v-model.lazy="cityFinder.term"
-                v-debounce="750"
-                name="address"
-                placeholder="Enter your city..."
-              >
-              <ul>
-                <li
-                  v-for="(name,i) in locations"
-                  :key="i"
-                  class="addressNames"
-                  @click="setLocation(name)"
-                >
-                  {{name.display_name}}
-                  <br>
-                  <span class="cityCoords">{{name.lat}}, {{name.lon}}</span>
-                </li>
-              </ul>
-            </div>
-          </transition>
-
           <div class="control2">
             Time format
             <select id="cmbFormat" v-model="parameters.timeFormat">
