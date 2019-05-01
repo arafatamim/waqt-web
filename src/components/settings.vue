@@ -98,6 +98,11 @@ export default {
         closeAndUpdate(parameters) {
             this.$emit('updateParameters', this.parameters);
         },
+        windowKeyDown(event) {
+            if (event.key === 'Escape') {
+                this.$emit('closeWithoutSaving');
+            }
+        },
         setLocation(name) {
             this.cityFinder.show = false;
             this.parameters.cityName = name.address.city;
@@ -178,6 +183,12 @@ export default {
     },
     directives: {
         debounce
+    },
+    created() {
+        window.addEventListener('keydown', this.windowKeyDown);
+    },
+    destroyed() {
+        window.removeEventListener('keydown', this.windowKeyDown);
     }
 };
 </script>
