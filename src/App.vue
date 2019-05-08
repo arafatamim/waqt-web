@@ -1,83 +1,97 @@
 <template>
-  <div id="bossContainer">
-    <!-- <spinner v-show="settings.loader.loading"/> -->
-    <settings
-      v-if="settings.dialog"
-      :city="settings.city"
-      :country="settings.country"
-      :tformat="settings.timeFormat"
-      :localtime="localTime"
-      :timezone="timezone"
-      :coordinates="coordinates"
-      @updateParameters="updateSettings"
-      @closeWithoutSaving="settings.dialog=false"
-    />
-    <div id="secondBossContainer">
-      <headerbox @showDialog="settings.dialog=true;"/>
-      <div class="contentBoxes">
-        <div class="contentBox" :class="{ active: nextWaqt=='Fajr' }">
-          <div class="divWaqt" id="divWaqt1">
-            <div class="waqtName">
-              Fajr
-              <span v-if="nextWaqt=='Fajr'" class="nextWaqtTime">{{timeToNextWaqt}}</span>
-            </div>
-            <div class="waqtTime" id="waqtTime1">{{times.fajr}}</div>
-          </div>
-        </div>
+    <div id="bossContainer">
+        <settings
+            v-if="settings.dialog"
+            :city="settings.city"
+            :country="settings.country"
+            :tformat="settings.timeFormat"
+            :localtime="localTime"
+            :timezone="timezone"
+            :coordinates="coordinates"
+            @updateParameters="updateSettings"
+            @closeWithoutSaving="settings.dialog=false"
+        />
+        <div id="secondBossContainer">
+            <headerbox @showDialog="settings.dialog=true;"/>
+            <div class="contentBoxes">
+                <div class="contentBox" :class="{ active: nextWaqt=='Fajr' }">
+                    <div class="divWaqt" id="divWaqt1">
+                        <div class="waqtName">
+                            Fajr
+                            <span
+                                v-if="nextWaqt=='Fajr'"
+                                class="nextWaqtTime"
+                            >{{timeToNextWaqt}}</span>
+                        </div>
+                        <div class="waqtTime" id="waqtTime1">{{times.fajr}}</div>
+                    </div>
+                </div>
 
-        <div class="contentBox" :class="{ active: nextWaqt=='Sunrise' }">
-          <div class="divWaqt" id="divWaqt2">
-            <div class="waqtName">
-              Sunrise
-              <span v-if="nextWaqt=='Sunrise'" class="nextWaqtTime">{{timeToNextWaqt}}</span>
-            </div>
-            <div class="waqtTime" id="waqtTime2">{{times.sunrise}}</div>
-          </div>
-        </div>
+                <div class="contentBox" :class="{ active: nextWaqt=='Sunrise' }">
+                    <div class="divWaqt" id="divWaqt2">
+                        <div class="waqtName">
+                            Sunrise
+                            <span
+                                v-if="nextWaqt=='Sunrise'"
+                                class="nextWaqtTime"
+                            >{{timeToNextWaqt}}</span>
+                        </div>
+                        <div class="waqtTime" id="waqtTime2">{{times.sunrise}}</div>
+                    </div>
+                </div>
 
-        <div class="contentBox" :class="{ active: nextWaqt=='Dhuhr' }">
-          <div class="divWaqt" id="divWaqt3">
-            <div class="waqtName">
-              Dhuhr
-              <span v-if="nextWaqt=='Dhuhr'" class="nextWaqtTime">{{timeToNextWaqt}}</span>
-            </div>
-            <div class="waqtTime" id="waqtTime3">{{times.dhuhr}}</div>
-          </div>
-        </div>
+                <div class="contentBox" :class="{ active: nextWaqt=='Dhuhr' }">
+                    <div class="divWaqt" id="divWaqt3">
+                        <div class="waqtName">
+                            Dhuhr
+                            <span
+                                v-if="nextWaqt=='Dhuhr'"
+                                class="nextWaqtTime"
+                            >{{timeToNextWaqt}}</span>
+                        </div>
+                        <div class="waqtTime" id="waqtTime3">{{times.dhuhr}}</div>
+                    </div>
+                </div>
 
-        <div class="contentBox" :class="{ active: nextWaqt=='Asr' }">
-          <div class="divWaqt" id="divWaqt4">
-            <div class="waqtName">
-              Asr
-              <span v-if="nextWaqt=='Asr'" class="nextWaqtTime">{{timeToNextWaqt}}</span>
-            </div>
-            <div class="waqtTime" id="waqtTime4">{{times.asr}}</div>
-          </div>
-        </div>
+                <div class="contentBox" :class="{ active: nextWaqt=='Asr' }">
+                    <div class="divWaqt" id="divWaqt4">
+                        <div class="waqtName">
+                            Asr
+                            <span v-if="nextWaqt=='Asr'" class="nextWaqtTime">{{timeToNextWaqt}}</span>
+                        </div>
+                        <div class="waqtTime" id="waqtTime4">{{times.asr}}</div>
+                    </div>
+                </div>
 
-        <div class="contentBox" :class="{ active: nextWaqt=='Maghrib' }">
-          <div class="divWaqt" id="divWaqt5">
-            <div class="waqtName">
-              Maghrib
-              <span v-if="nextWaqt=='Maghrib'" class="nextWaqtTime">{{timeToNextWaqt}}</span>
-            </div>
-            <div class="waqtTime" id="waqtTime5">{{times.maghrib}}</div>
-          </div>
-        </div>
+                <div class="contentBox" :class="{ active: nextWaqt=='Maghrib' }">
+                    <div class="divWaqt" id="divWaqt5">
+                        <div class="waqtName">
+                            Maghrib
+                            <span
+                                v-if="nextWaqt=='Maghrib'"
+                                class="nextWaqtTime"
+                            >{{timeToNextWaqt}}</span>
+                        </div>
+                        <div class="waqtTime" id="waqtTime5">{{times.maghrib}}</div>
+                    </div>
+                </div>
 
-        <div class="contentBox" :class="{ active: nextWaqt=='Isha' }">
-          <div class="divWaqt" id="divWaqt6">
-            <div class="waqtName">
-              Isha
-              <span v-if="nextWaqt=='Isha'" class="nextWaqtTime">{{timeToNextWaqt}}</span>
+                <div class="contentBox" :class="{ active: nextWaqt=='Isha' }">
+                    <div class="divWaqt" id="divWaqt6">
+                        <div class="waqtName">
+                            Isha
+                            <span
+                                v-if="nextWaqt=='Isha'"
+                                class="nextWaqtTime"
+                            >{{timeToNextWaqt}}</span>
+                        </div>
+                        <div class="waqtTime" id="waqtTime6">{{times.isha}}</div>
+                    </div>
+                </div>
             </div>
-            <div class="waqtTime" id="waqtTime6">{{times.isha}}</div>
-          </div>
+            <snackbar v-show="settings.snackbar" @reloadTimes="getLocation()"/>
         </div>
-      </div>
-      <!-- <snackbar v-show="settings.snackbar" @reloadTimes="getTimes()"/> -->
     </div>
-  </div>
 </template>
 
 <script>
@@ -120,24 +134,10 @@ export default {
                 }
             },
             nextWaqt: null,
-            timeToNextWaqt: null,
-            coordinates: {
-                latitude: null,
-                longitude: null
-            }
+            timeToNextWaqt: null
         };
     },
     created() {
-        // if (localStorage.getItem('city') != null) {
-        //     this.settings.city = localStorage.getItem('city');
-        //     this.settings.country = localStorage.getItem('country');
-        //     this.settings.timeFormat = localStorage.getItem('timeFormat');
-        //     this.coordinates.latitude = localStorage.getItem('latitude');
-        //     this.coordinates.longitude = localStorage.getItem('longitude');
-        // } else {
-        //     this.getLocation();
-        //     this.settings.timeFormat = 'h:mm A';
-        // }
         if (localStorage.getItem('timeFormat') != null) {
             this.settings.timeFormat = localStorage.getItem('timeFormat');
         } else {
@@ -146,25 +146,27 @@ export default {
         }
     },
     beforeMount() {
-        setInterval(this.getTimes(), 600000);
+        setInterval(this.getLocation(), 600000);
     },
     methods: {
         getLocation() {
+            var coords = {};
             navigator.geolocation.getCurrentPosition(
                 location => {
-                    this.coordinates.latitude = location.coords.latitude;
-                    this.coordinates.longitude = location.coords.longitude;
+                    coords.lat = location.coords.latitude.toFixed(4);
+                    coords.lon = location.coords.longitude.toFixed(4);
+                    this.getTimes(coords);
+                    this.settings.snackbar = false;
                 },
                 err => {
                     console.log(err);
                     console.log('Fallback to IP geolocation');
                     this.$axios
-                        .get('https://ip-api.io/json/')
+                        .get('http://ip-api.com/json/')
                         .then(response => {
-                            this.coordinates.latitude = response.data.lat;
-                            this.coordinates.longitude = response.data.lon;
-                            this.settings.city = response.data.city;
-                            this.settings.country = response.data.country;
+                            coords.lat = response.data.lat.toFixed(4);
+                            coords.lon = response.data.lon.toFixed(4);
+                            this.getTimes(coords);
                             this.settings.snackbar = false;
                         })
                         .catch(error => {
@@ -174,33 +176,31 @@ export default {
                 }
             );
         },
-        getTimes: function() {
+        getTimes(coords) {
             const adhan = require('adhan');
             const moment = require('moment');
 
             this.getLocation();
             var date = new Date();
-            var coordinates = new adhan.Coordinates(
-                this.coordinates.latitude,
-                this.coordinates.longitude
-            );
+            var coordinates = new adhan.Coordinates(coords.lat, coords.lon);
             var params = adhan.CalculationMethod.Karachi();
             params.madhab = adhan.Madhab.Hanafi;
+            params.highLatitudeRule = adhan.HighLatitudeRule.TwilightAngle;
             var prayerTimes = new adhan.PrayerTimes(coordinates, date, params);
             var formattedTime = adhan.Date.formattedTime;
-            // let UTCOffset = moment
-            //     .duration(
-            //         moment()
-            //             .parseZone()
-            //             .format('Z')
-            //     )
-            //     .asHours();
-            var milFajr = formattedTime(prayerTimes.fajr, 0, '24h');
-            var milSunrise = formattedTime(prayerTimes.sunrise, 0, '24h');
-            var milDhuhr = formattedTime(prayerTimes.dhuhr, 0, '24h');
-            var milAsr = formattedTime(prayerTimes.asr, 0, '24h');
-            var milMaghrib = formattedTime(prayerTimes.maghrib, 0, '24h');
-            var milIsha = formattedTime(prayerTimes.isha, 0, '24h');
+            let UTCOffset = moment
+                .duration(
+                    moment()
+                        .parseZone()
+                        .format('Z')
+                )
+                .asHours();
+            var milFajr = formattedTime(prayerTimes.fajr, UTCOffset, '24h');
+            var milSunrise = formattedTime(prayerTimes.sunrise, UTCOffset, '24h');
+            var milDhuhr = formattedTime(prayerTimes.dhuhr, UTCOffset, '24h');
+            var milAsr = formattedTime(prayerTimes.asr, UTCOffset, '24h');
+            var milMaghrib = formattedTime(prayerTimes.maghrib, UTCOffset, '24h');
+            var milIsha = formattedTime(prayerTimes.isha, UTCOffset, '24h');
 
             this.times.fajr = moment(milFajr, 'HH:mm').format(this.settings.timeFormat);
             this.times.sunrise = moment(milSunrise, 'HH:mm').format(this.settings.timeFormat);
@@ -247,18 +247,11 @@ export default {
             this.settings.snackbar = false;
         },
         updateSettings(parameters) {
-            // this.settings.city = parameters.cityName;
-            // this.settings.country = parameters.countryName;
-            // this.coordinates = parameters.coords;
             this.settings.timeFormat = parameters.timeFormat;
             this.settings.dialog = false;
-            this.getTimes();
+            this.getLocation();
             localStorage.setItem('timeFormat', parameters.timeFormat);
             location.reload();
-            // localStorage.setItem('city', parameters.cityName);
-            // localStorage.setItem('country', parameters.countryName);
-            // localStorage.setItem('latitude', parameters.coords.latitude);
-            // localStorage.setItem('longitude', parameters.coords.longitude);
         }
     }
 };

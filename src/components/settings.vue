@@ -1,97 +1,81 @@
 <template>
-  <div>
-    <transition
-      v-on:before-enter="bgBeforeEnter"
-      v-on:enter="bgEnter"
-      v-on:leave="bgLeave"
-      v-bind:css="false"
-    >
-      <div id="bg" @click="$emit('closeWithoutSaving')"></div>
-    </transition>
-    <transition
-      v-on:before-enter="boxBeforeEnter"
-      v-on:enter="boxEnter"
-      v-on:leave="boxLeave"
-      v-bind:css="false"
-      appear
-    >
-      <div id="settingsBox">
-        <div id="divSettingsHeader">
-          <div id="settingsText">Settings</div>
-          <font-awesome-icon
-            icon="save"
-            id="closeIcon"
-            class="iconButton"
-            @click="closeAndUpdate()"
-          />
-        </div>
-        <div id="divSettingsContent">
-          <!-- <div class="control3">
-                    Method:
-                    <select id="cmbMethod">
-                      <option value="mwl">Muslim World League</option>
-                      <option value="isna">Islamic Society of North America</option>
-                      <option value="egas">Egyptian General Authority of Survey</option>
-                      <option value="makkah">Umm al-Qura University, Makkah</option>
-                      <option value="karachi">University of Islamic Sciences, Karachi</option>
-                      <option value="tehran">Institute of Geophysics, University of Tehran</option>
-                      <option value="shia">Shia Ithna Ansari, Leva Research Institute, Tehran</option>
-                    </select>
-          </div>-->
-          <div class="control2">
-            Time format
-            <select id="cmbFormat" v-model="parameters.timeFormat">
-              <option value="h:mm A">12-hour</option>
-              <option value="H:mm">24-hour</option>
-            </select>
-          </div>
-          <div id="localTime">Local Time: {{localtime}}</div>
-          <div id="timezone">Timezone: {{timezone}}</div>
-          <div id="aboutInfo">
-            An app to display current prayer times for the selected location.
-            <br>Made with ♥️ by Tamim Arafat.
-            <br>
-            <a href="http://github.com/arafatamim/waqt-web" target="_blank" class="aboutLink">
-              <font-awesome-icon :icon="['fab', 'github']"/>&nbsp;Source on GitHub
-            </a>
-            <br>
-            <br>
-            <!-- &nbsp;|&nbsp;
-            <a href="http://github.com/arafatamim/waqt-web" target="_blank" class="aboutLink"><font-awesome-icon :icon="['fas', 'coffee']" /> Support me :-)</a>-->
-            <a href="https://ko-fi.com/Q5Q1TLM1" target="_blank">
-              <img
-                height="36"
-                style="border:0px;height:36px;"
-                src="../assets/kofi3.png"
-                border="0"
-                alt="Buy Me a Coffee at ko-fi.com"
-              >
-            </a>
-          </div>
-        </div>
-      </div>
-    </transition>
-  </div>
+    <div>
+        <transition
+            v-on:before-enter="bgBeforeEnter"
+            v-on:enter="bgEnter"
+            v-on:leave="bgLeave"
+            v-bind:css="false"
+        >
+            <div id="bg" @click="$emit('closeWithoutSaving')"></div>
+        </transition>
+        <transition
+            v-on:before-enter="boxBeforeEnter"
+            v-on:enter="boxEnter"
+            v-on:leave="boxLeave"
+            v-bind:css="false"
+            appear
+        >
+            <div id="settingsBox">
+                <div id="divSettingsHeader">
+                    <div id="settingsText">Settings</div>
+                    <font-awesome-icon
+                        icon="save"
+                        id="closeIcon"
+                        class="iconButton"
+                        @click="closeAndUpdate()"
+                    />
+                </div>
+                <div id="divSettingsContent">
+                    <div class="control2">
+                        Time format
+                        <select id="cmbFormat" v-model="parameters.timeFormat">
+                            <option value="h:mm A">12-hour</option>
+                            <option value="H:mm">24-hour</option>
+                        </select>
+                    </div>
+                    <div id="localTime">Local Time: {{localtime}}</div>
+                    <div id="timezone">Timezone: {{timezone}}</div>
+                    <div id="aboutInfo">
+                        An app to display current prayer times for the selected location.
+                        <br>Made with ♥️ by Tamim Arafat.
+                        <br>
+                        <a
+                            href="http://github.com/arafatamim/waqt-web"
+                            target="_blank"
+                            class="aboutLink"
+                        >
+                            <font-awesome-icon :icon="['fab', 'github']"/>&nbsp;Source on GitHub
+                        </a>
+                        <br>
+                        <br>
+                        <!-- &nbsp;|&nbsp;
+                        <a href="http://github.com/arafatamim/waqt-web" target="_blank" class="aboutLink"><font-awesome-icon :icon="['fas', 'coffee']" /> Support me :-)</a>-->
+                        <a href="https://ko-fi.com/Q5Q1TLM1" target="_blank">
+                            <img
+                                height="36"
+                                style="border:0px;height:36px;"
+                                src="../assets/kofi3.png"
+                                border="0"
+                                alt="Buy Me a Coffee at ko-fi.com"
+                            >
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </transition>
+    </div>
 </template>
 
 <script>
 import debounce from 'v-debounce';
 
 export default {
-    props: ['city', 'country', 'tformat', 'localtime', 'timezone', 'coordinates'],
+    props: ['tformat', 'localtime', 'timezone'],
     data() {
         return {
             parameters: {
-                cityName: this.city,
-                countryName: this.country,
-                timeFormat: this.tformat,
-                coords: this.coordinates
-            },
-            cityFinder: {
-                show: false,
-                term: ''
-            },
-            locations: []
+                timeFormat: this.tformat
+            }
         };
     },
     methods: {
