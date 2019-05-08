@@ -2,90 +2,96 @@
     <div id="bossContainer">
         <settings
             v-if="settings.dialog"
-            :city="settings.city"
-            :country="settings.country"
             :tformat="settings.timeFormat"
             :localtime="localTime"
             :timezone="timezone"
-            :coordinates="coordinates"
             @updateParameters="updateSettings"
-            @closeWithoutSaving="settings.dialog=false"
+            @closeWithoutSaving="settings.dialog = false"
         />
         <div id="secondBossContainer">
-            <headerbox @showDialog="settings.dialog=true;"/>
+            <headerbox @showDialog="settings.dialog = true"/>
             <div class="contentBoxes">
-                <div class="contentBox" :class="{ active: nextWaqt=='Fajr' }">
+                <div class="contentBox" :class="{ active: nextWaqt == 'Fajr' }">
                     <div class="divWaqt" id="divWaqt1">
                         <div class="waqtName">
                             Fajr
-                            <span
-                                v-if="nextWaqt=='Fajr'"
-                                class="nextWaqtTime"
-                            >{{timeToNextWaqt}}</span>
+                            <span v-if="nextWaqt == 'Fajr'" class="nextWaqtTime">
+                                {{
+                                timeToNextWaqt
+                                }}
+                            </span>
                         </div>
-                        <div class="waqtTime" id="waqtTime1">{{times.fajr}}</div>
+                        <div class="waqtTime" id="waqtTime1">{{ times.fajr }}</div>
                     </div>
                 </div>
 
-                <div class="contentBox" :class="{ active: nextWaqt=='Sunrise' }">
+                <div class="contentBox" :class="{ active: nextWaqt == 'Sunrise' }">
                     <div class="divWaqt" id="divWaqt2">
                         <div class="waqtName">
                             Sunrise
-                            <span
-                                v-if="nextWaqt=='Sunrise'"
-                                class="nextWaqtTime"
-                            >{{timeToNextWaqt}}</span>
+                            <span v-if="nextWaqt == 'Sunrise'" class="nextWaqtTime">
+                                {{
+                                timeToNextWaqt
+                                }}
+                            </span>
                         </div>
-                        <div class="waqtTime" id="waqtTime2">{{times.sunrise}}</div>
+                        <div class="waqtTime" id="waqtTime2">{{ times.sunrise }}</div>
                     </div>
                 </div>
 
-                <div class="contentBox" :class="{ active: nextWaqt=='Dhuhr' }">
+                <div class="contentBox" :class="{ active: nextWaqt == 'Dhuhr' }">
                     <div class="divWaqt" id="divWaqt3">
                         <div class="waqtName">
                             Dhuhr
-                            <span
-                                v-if="nextWaqt=='Dhuhr'"
-                                class="nextWaqtTime"
-                            >{{timeToNextWaqt}}</span>
+                            <span v-if="nextWaqt == 'Dhuhr'" class="nextWaqtTime">
+                                {{
+                                timeToNextWaqt
+                                }}
+                            </span>
                         </div>
-                        <div class="waqtTime" id="waqtTime3">{{times.dhuhr}}</div>
+                        <div class="waqtTime" id="waqtTime3">{{ times.dhuhr }}</div>
                     </div>
                 </div>
 
-                <div class="contentBox" :class="{ active: nextWaqt=='Asr' }">
+                <div class="contentBox" :class="{ active: nextWaqt == 'Asr' }">
                     <div class="divWaqt" id="divWaqt4">
                         <div class="waqtName">
                             Asr
-                            <span v-if="nextWaqt=='Asr'" class="nextWaqtTime">{{timeToNextWaqt}}</span>
+                            <span v-if="nextWaqt == 'Asr'" class="nextWaqtTime">
+                                {{
+                                timeToNextWaqt
+                                }}
+                            </span>
                         </div>
-                        <div class="waqtTime" id="waqtTime4">{{times.asr}}</div>
+                        <div class="waqtTime" id="waqtTime4">{{ times.asr }}</div>
                     </div>
                 </div>
 
-                <div class="contentBox" :class="{ active: nextWaqt=='Maghrib' }">
+                <div class="contentBox" :class="{ active: nextWaqt == 'Maghrib' }">
                     <div class="divWaqt" id="divWaqt5">
                         <div class="waqtName">
                             Maghrib
-                            <span
-                                v-if="nextWaqt=='Maghrib'"
-                                class="nextWaqtTime"
-                            >{{timeToNextWaqt}}</span>
+                            <span v-if="nextWaqt == 'Maghrib'" class="nextWaqtTime">
+                                {{
+                                timeToNextWaqt
+                                }}
+                            </span>
                         </div>
-                        <div class="waqtTime" id="waqtTime5">{{times.maghrib}}</div>
+                        <div class="waqtTime" id="waqtTime5">{{ times.maghrib }}</div>
                     </div>
                 </div>
 
-                <div class="contentBox" :class="{ active: nextWaqt=='Isha' }">
+                <div class="contentBox" :class="{ active: nextWaqt == 'Isha' }">
                     <div class="divWaqt" id="divWaqt6">
                         <div class="waqtName">
                             Isha
-                            <span
-                                v-if="nextWaqt=='Isha'"
-                                class="nextWaqtTime"
-                            >{{timeToNextWaqt}}</span>
+                            <span v-if="nextWaqt == 'Isha'" class="nextWaqtTime">
+                                {{
+                                timeToNextWaqt
+                                }}
+                            </span>
                         </div>
-                        <div class="waqtTime" id="waqtTime6">{{times.isha}}</div>
+                        <div class="waqtTime" id="waqtTime6">{{ times.isha }}</div>
                     </div>
                 </div>
             </div>
@@ -156,7 +162,6 @@ export default {
                     coords.lat = location.coords.latitude.toFixed(4);
                     coords.lon = location.coords.longitude.toFixed(4);
                     this.getTimes(coords);
-                    this.settings.snackbar = false;
                 },
                 err => {
                     console.log(err);
@@ -167,7 +172,6 @@ export default {
                             coords.lat = response.data.lat.toFixed(4);
                             coords.lon = response.data.lon.toFixed(4);
                             this.getTimes(coords);
-                            this.settings.snackbar = false;
                         })
                         .catch(error => {
                             this.settings.snackbar = true;
