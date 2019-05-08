@@ -14,12 +14,12 @@
 <script>
 export default {
     name: 'snackbar'
-}
+};
 </script>
 <style lang="scss" scoped>
 @import 'styles/_base.scss';
 
-.errorBanner{
+.errorBanner {
     background-color: #ff1c1c;
     font-family: 'Poppins', sans-serif;
     color: white;
@@ -38,11 +38,11 @@ export default {
     box-sizing: border-box;
 }
 
-#icon{
+#icon {
     margin-right: 10px;
 }
 
-#btnReloadbg{
+#btnReloadbg {
     display: inline-block;
     background-color: #cc1919;
     padding: 5px;
@@ -53,19 +53,19 @@ export default {
     vertical-align: middle;
     cursor: pointer;
 }
-#btnReloadbg:active{
+#btnReloadbg:active {
     background-color: #b61515;
 }
-.slide-enter-active{
+.slide-enter-active {
     transition: transform 0.3s ease;
 }
 .slide-leave-active {
-  transition: transform 0.5s ease;
+    transition: transform 0.5s ease;
 }
-.slide-leave-to{
-  transform: translateY(100px);
+.slide-leave-to {
+    transform: translateY(100px);
 }
-.slide-enter{
-  transform: translateY(100px);
+.slide-enter {
+    transform: translateY(100px);
 }
 </style>

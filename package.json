@@ -18,8 +18,6 @@
         "moment": "^2.24.0",
         "npm": "^6.9.0",
         "register-service-worker": "^1.6.2",
-        "v-debounce": "^0.1.2",
-        "velocity-animate": "^1.5.2",
         "vue": "^2.6.6"
     },
     "devDependencies": {
