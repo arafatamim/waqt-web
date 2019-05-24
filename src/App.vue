@@ -9,18 +9,18 @@
       @closeWithoutSaving="settings.dialog = false"
     />
     <div id="secondBossContainer">
-      <headerbox @showDialog="settings.dialog = true"/>
+      <headerbox @showDialog="settings.dialog = true" />
       <div class="contentBoxes">
         <timebox
-          v-for="(val,i) in waqts"
+          v-for="(val, i) in waqts"
           :key="i"
           :waqtName="val"
           :waqtTime="times[val.toLowerCase()]"
-          :activeWaqt="nextWaqt===val"
+          :activeWaqt="nextWaqt === val"
           :timeToNextWaqt="timeToNextWaqt"
         />
       </div>
-      <snackbar v-show="settings.snackbar" @reloadTimes="getLocation()"/>
+      <snackbar v-show="settings.snackbar" @reloadTimes="getLocation()" />
     </div>
   </div>
 </template>

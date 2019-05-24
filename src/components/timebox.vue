@@ -2,11 +2,9 @@
   <div class="contentBox" :class="{ active: activeWaqt }">
     <div class="divWaqt" id="divWaqt1">
       <div class="waqtName">
-        {{waqtName}}
+        {{ waqtName }}
         <span v-if="activeWaqt" class="nextWaqtTime">
-          {{
-          timeToNextWaqt
-          }}
+          {{ timeToNextWaqt }}
         </span>
       </div>
       <div class="waqtTime" id="waqtTime1">{{ waqtTime }}</div>
@@ -25,7 +23,7 @@ export default {
 };
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 @import '../styles/base';
 
 .contentBox {
