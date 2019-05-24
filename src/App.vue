@@ -167,7 +167,7 @@ export default {
                     console.log(err);
                     console.log('Fallback to IP geolocation');
                     this.$axios
-                        .get('http://ip-api.com/json/')
+                        .get('https://ip-api.io/json/')
                         .then(response => {
                             coords.lat = response.data.lat.toFixed(4);
                             coords.lon = response.data.lon.toFixed(4);
