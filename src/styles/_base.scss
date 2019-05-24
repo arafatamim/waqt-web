@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Poppins:400,600");
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,600');
 
 $text-color: (
   light: #333,
@@ -9,9 +9,9 @@ $bg-color: (
   dark: #222
 );
 
-$base-font: "Poppins", "Liberation Sans", sans-serif;
+$base-font: 'Poppins', 'Liberation Sans', sans-serif;
 
-$ui-theme: "dark"; // 'light' or 'dark'
+$ui-theme: 'dark'; // 'light' or 'dark'
 
 $theme: (
   text:
@@ -64,12 +64,16 @@ $icon-button-color: lighten(
   15%
 );
 
+body {
+  background-color: $main-bg;
+  margin: 0;
+}
 div {
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
 %controlStyles {
-  @if $ui-theme == "dark" {
+  @if $ui-theme == 'dark' {
     background-color: lighten(map-get($map: $theme, $key: bg), 5%);
   } @else {
     background-color: darken(map-get($map: $theme, $key: bg), 5%);
@@ -82,14 +86,14 @@ div {
   color: map-get($map: $theme, $key: text);
   outline: none;
   &:hover {
-    @if $ui-theme == "dark" {
+    @if $ui-theme == 'dark' {
       background-color: lighten(map-get($map: $theme, $key: bg), 10%);
     } @else {
       background-color: darken(map-get($map: $theme, $key: bg), 10%);
     }
   }
   &:focus {
-    @if $ui-theme == "dark" {
+    @if $ui-theme == 'dark' {
       background-color: lighten(map-get($map: $theme, $key: bg), 10%);
     } @else {
       background-color: darken(map-get($map: $theme, $key: bg), 10%);
@@ -106,7 +110,7 @@ select {
 }
 input {
   @extend %controlStyles;
-  @if $ui-theme == "dark" {
+  @if $ui-theme == 'dark' {
     background-color: darken(map-get($map: $theme, $key: bg), 5%);
   } @else {
     background-color: darken(map-get($map: $theme, $key: bg), 10%);
@@ -114,14 +118,14 @@ input {
   width: 100%;
   box-sizing: border-box;
   &:hover {
-    @if $ui-theme == "dark" {
+    @if $ui-theme == 'dark' {
       background-color: darken(map-get($map: $theme, $key: bg), 6%);
     } @else {
       background-color: darken(map-get($map: $theme, $key: bg), 15%);
     }
   }
   &:focus {
-    @if $ui-theme == "dark" {
+    @if $ui-theme == 'dark' {
       background-color: darken(map-get($map: $theme, $key: bg), 8%);
     } @else {
       background-color: darken(map-get($map: $theme, $key: bg), 20%);

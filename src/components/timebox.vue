@@ -1,15 +1,33 @@
-@import "base";
+<template>
+  <div class="contentBox" :class="{ active: activeWaqt }">
+    <div class="divWaqt" id="divWaqt1">
+      <div class="waqtName">
+        {{waqtName}}
+        <span v-if="activeWaqt" class="nextWaqtTime">
+          {{
+          timeToNextWaqt
+          }}
+        </span>
+      </div>
+      <div class="waqtTime" id="waqtTime1">{{ waqtTime }}</div>
+    </div>
+  </div>
+</template>
 
-body {
-  background-color: $main-bg;
-  margin: 0;
-}
+<script>
+export default {
+  props: {
+    waqtName: String,
+    waqtTime: String,
+    timeToNextWaqt: String,
+    activeWaqt: Boolean
+  }
+};
+</script>
 
-.contentBoxes {
-  display: grid;
-  grid-template-columns: repeat(3, 33.3%);
-  grid-template-rows: repeat(2, 220px);
-}
+<style lang='scss'>
+@import '../styles/base';
+
 .contentBox {
   margin: 10px;
   padding: 25px;
@@ -62,16 +80,6 @@ body {
   // }
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.3s ease;
-}
-.fade-enter {
-  opacity: 100;
-}
-.fade-leave-to {
-  opacity: 0;
-}
 @keyframes flash {
   0% {
     border-color: rgba($color: #333, $alpha: 1);
@@ -84,34 +92,4 @@ body {
   border: 5px solid #ccc;
   animation: flash 1.5s infinite alternate;
 }
-
-@media (max-width: 800px) {
-  .contentBoxes {
-    grid-template-columns: repeat(2, 50%);
-    grid-template-rows: repeat(3, 220px);
-  }
-}
-@media (max-width: 575px) {
-  .contentBoxes {
-    grid-template-columns: 100%;
-    grid-template-rows: repeat(6, 220px);
-  }
-  #headerBox {
-    margin: 30px 50px 10px 50px;
-    display: block;
-  }
-  #headerText {
-    text-align: center;
-  }
-}
-
-@media (min-width: 825px) {
-  #secondBossContainer {
-    padding: 3% 5%;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-  }
-}
+</style>
