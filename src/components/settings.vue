@@ -4,12 +4,7 @@
     <div id="settingsBox">
       <div id="divSettingsHeader">
         <div id="settingsText">Settings</div>
-        <font-awesome-icon
-          icon="save"
-          id="closeIcon"
-          class="iconButton"
-          @click="closeAndUpdate()"
-        />
+        <font-awesome-icon icon="save" id="closeIcon" class="iconButton" @click="closeAndUpdate()"/>
       </div>
       <div id="divSettingsContent">
         <div class="control2">
@@ -23,13 +18,13 @@
         <div id="timezone">Timezone: {{ timezone }}</div>
         <div id="aboutInfo">
           An app to display current prayer times for the selected location.
-          <br />Made with ♥️ by Tamim Arafat.
-          <br />
+          <br>Made with ♥️ by Tamim Arafat.
+          <br>
           <a href="http://github.com/arafatamim/waqt-web" target="_blank" class="aboutLink">
-            <font-awesome-icon :icon="['fab', 'github']" />&nbsp;Source on GitHub
+            <font-awesome-icon :icon="['fab', 'github']"/>&nbsp;Source on GitHub
           </a>
-          <br />
-          <br />
+          <br>
+          <br>
           <a href="https://ko-fi.com/Q5Q1TLM1" target="_blank">
             <img
               height="36"
@@ -37,7 +32,7 @@
               src="../assets/kofi3.png"
               border="0"
               alt="Buy Me a Coffee at ko-fi.com"
-            />
+            >
           </a>
         </div>
       </div>
@@ -60,19 +55,8 @@ export default {
     };
   },
   methods: {
-    closeAndUpdate(parameters) {
+    closeAndUpdate: function(parameters) {
       this.$emit('updateParameters', this.parameters);
-    },
-    windowKeyDown(event) {
-      if (event.key === 'Escape') {
-        this.$emit('closeWithoutSaving');
-      }
-    },
-    created() {
-      window.addEventListener('keydown', this.windowKeyDown);
-    },
-    destroyed() {
-      window.removeEventListener('keydown', this.windowKeyDown);
     }
   }
 };

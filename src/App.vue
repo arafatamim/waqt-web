@@ -9,7 +9,7 @@
       @closeWithoutSaving="settings.dialog = false"
     />
     <div id="secondBossContainer">
-      <headerbox @showDialog="settings.dialog = true" />
+      <headerbox @showDialog="settings.dialog = true"/>
       <div class="contentBoxes">
         <timebox
           v-for="(val, i) in waqts"
@@ -20,7 +20,7 @@
           :timeToNextWaqt="timeToNextWaqt"
         />
       </div>
-      <snackbar v-show="settings.snackbar" @reloadTimes="getLocation()" />
+      <snackbar v-show="settings.snackbar" @reloadTimes="getLocation()"/>
     </div>
   </div>
 </template>
@@ -30,7 +30,6 @@ import snackbar from '@/components/snackbar.vue';
 import headerbox from '@/components/headerbox.vue';
 import timebox from '@/components/timebox.vue';
 import settings from '@/components/settings.vue';
-import spinner from '@/components/spinner.vue';
 import { setInterval } from 'timers';
 
 export default {
@@ -38,8 +37,7 @@ export default {
     snackbar,
     headerbox,
     timebox,
-    settings,
-    spinner
+    settings
   },
   data() {
     return {
@@ -78,11 +76,30 @@ export default {
       this.getLocation();
       this.settings.timeFormat = 'h:mm A';
     }
+    window.addEventListener('popstate', this.handleHistoryChange);
+    window.addEventListener('keydown', this.windowKeyDown);
+  },
+  destroyed() {
+    window.removeEventListener('popstate', this.handleHistoryChange);
   },
   beforeMount() {
     setInterval(this.getLocation(), 600000);
   },
   methods: {
+    handleHistoryChange() {
+      if (location.hash === '#settings') {
+        this.settings.dialog = true;
+      } else {
+        this.settings.dialog = false;
+      }
+    },
+    windowKeyDown(e) {
+      if (this.settings.dialog === true) {
+        if (e.key === 'Escape' || e.key === 'Backspace') {
+          this.settings.dialog = false;
+        }
+      }
+    },
     getLocation() {
       var coords = {};
       navigator.geolocation.getCurrentPosition(
@@ -184,6 +201,15 @@ export default {
       this.getLocation();
       localStorage.setItem('timeFormat', parameters.timeFormat);
       location.reload();
+    }
+  },
+  watch: {
+    'settings.dialog': function(val) {
+      if (val === true) {
+        location.hash = 'settings';
+      } else {
+        location.hash = '';
+      }
     }
   }
 };
