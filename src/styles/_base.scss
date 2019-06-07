@@ -32,7 +32,7 @@ $main-bg: map-get(
 );
 
 $fajr-style: (
-  background: linear-gradient(315deg, #0cbaba 0%, #380036 74%),
+  background: linear-gradient(135deg, #00055e 0%, #00055e 0%, #276de6 100%),
   foreground: map-get($text-color, dark)
 );
 $sunrise-style: (
