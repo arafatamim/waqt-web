@@ -6,11 +6,9 @@ import 'typeface-poppins';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faCog, faRedo, faSave, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+// import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 library.add(faCog, faRedo, faSave, faTimesCircle, faGithub);
-
-Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 Vue.config.productionTip = false;
 

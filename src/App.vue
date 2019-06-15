@@ -26,18 +26,18 @@
 </template>
 
 <script>
-import snackbar from '@/components/snackbar.vue';
-import headerbox from '@/components/headerbox.vue';
-import timebox from '@/components/timebox.vue';
-import settings from '@/components/settings.vue';
+import Snackbar from '@/components/Snackbar.vue';
+import Headerbox from '@/components/Headerbox.vue';
+import Timebox from '@/components/Timebox.vue';
+import Settings from '@/components/Settings.vue';
 import { setInterval } from 'timers';
 
 export default {
   components: {
-    snackbar,
-    headerbox,
-    timebox,
-    settings
+    Snackbar,
+    Headerbox,
+    Timebox,
+    Settings
   },
   data() {
     return {
@@ -77,7 +77,6 @@ export default {
       this.settings.timeFormat = 'h:mm A';
     }
     window.addEventListener('popstate', this.handleHistoryChange);
-    window.addEventListener('keydown', this.windowKeyDown);
   },
   destroyed() {
     window.removeEventListener('popstate', this.handleHistoryChange);
@@ -93,16 +92,9 @@ export default {
         this.settings.dialog = false;
       }
     },
-    windowKeyDown(e) {
-      if (this.settings.dialog === true) {
-        if (e.key === 'Escape' || e.key === 'Backspace') {
-          this.settings.dialog = false;
-        }
-      }
-    },
-    getLocation() {
+    async getLocation() {
       var coords = {};
-      navigator.geolocation.getCurrentPosition(
+      await navigator.geolocation.getCurrentPosition(
         location => {
           coords.lat = location.coords.latitude.toFixed(4);
           coords.lon = location.coords.longitude.toFixed(4);
@@ -112,10 +104,10 @@ export default {
           console.log(err);
           console.log('Fallback to IP geolocation');
           this.$axios
-            .get('https://ip-api.io/json/')
+            .get('https://api.ipgeolocationapi.com/geolocate')
             .then(response => {
-              coords.lat = response.data.lat.toFixed(4);
-              coords.lon = response.data.lon.toFixed(4);
+              coords.lat = response.data.geo.latitude.toFixed(4);
+              coords.lon = response.data.geo.longitude.toFixed(4);
               this.getTimes(coords);
             })
             .catch(error => {
@@ -129,7 +121,7 @@ export default {
       const adhan = require('adhan');
       const moment = require('moment');
 
-      this.getLocation();
+      // this.getLocation();
       var date = new Date();
       var coordinates = new adhan.Coordinates(coords.lat, coords.lon);
       var params = adhan.CalculationMethod.Karachi();

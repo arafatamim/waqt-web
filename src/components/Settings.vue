@@ -41,7 +41,13 @@
 </template>
 
 <script>
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
 export default {
+  name: 'Settings',
+  components: {
+    FontAwesomeIcon
+  },
   props: {
     tformat: String,
     localtime: String,
@@ -57,7 +63,18 @@ export default {
   methods: {
     closeAndUpdate: function(parameters) {
       this.$emit('updateParameters', this.parameters);
+    },
+    windowKeyDown: function(e) {
+      if (e.keyCode === 27) {
+        this.$emit('closeWithoutSaving');
+      }
     }
+  },
+  created() {
+    window.addEventListener('keydown', this.windowKeyDown);
+  },
+  destroyed() {
+    window.removeEventListener('keydown', this.windowKeyDown);
   }
 };
 </script>

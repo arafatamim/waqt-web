@@ -3,9 +3,7 @@
     <div class="divWaqt" id="divWaqt1">
       <div class="waqtName">
         {{ waqtName }}
-        <span v-if="activeWaqt" class="nextWaqtTime">
-          {{ timeToNextWaqt }}
-        </span>
+        <span v-if="activeWaqt" class="nextWaqtTime">{{ timeToNextWaqt }}</span>
       </div>
       <div class="waqtTime" id="waqtTime1">{{ waqtTime }}</div>
     </div>
@@ -14,6 +12,7 @@
 
 <script>
 export default {
+  name: 'Timebox',
   props: {
     waqtName: String,
     waqtTime: String,

@@ -2,7 +2,7 @@
   <transition name="slide">
     <div class="errorBanner">
       <span>
-        <font-awesome-icon id="icon" icon="times-circle" />
+        <font-awesome-icon id="icon" icon="times-circle"/>
         <span class="bannerText">Something went wrong</span>
       </span>
       <span id="btnReloadbg" @click="$emit('reloadTimes')">
@@ -12,8 +12,12 @@
   </transition>
 </template>
 <script>
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 export default {
-  name: 'snackbar'
+  name: 'Snackbar',
+  components: {
+    FontAwesomeIcon
+  }
 };
 </script>
 <style lang="scss" scoped>

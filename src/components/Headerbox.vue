@@ -11,7 +11,14 @@
 </template>
 
 <script>
-export default {};
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
+export default {
+  name: 'Headerbox',
+  components: {
+    FontAwesomeIcon
+  }
+};
 </script>
 
 <style lang="scss" scoped>
