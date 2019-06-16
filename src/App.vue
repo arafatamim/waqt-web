@@ -3,6 +3,7 @@
     <settings
       v-if="settings.dialog"
       :tformat="settings.timeFormat"
+      :calcMethod="settings.method"
       :localtime="localTime"
       :timezone="timezone"
       @updateParameters="updateSettings"
@@ -31,6 +32,7 @@ import Headerbox from '@/components/Headerbox.vue';
 import Timebox from '@/components/Timebox.vue';
 import Settings from '@/components/Settings.vue';
 import { setInterval } from 'timers';
+const moment = require('moment');
 
 export default {
   components: {
@@ -56,7 +58,7 @@ export default {
         city: '',
         country: '',
         timeFormat: 'h:mm A',
-        method: 1,
+        method: 'karachi',
         snackbar: false,
         dialog: false,
         darkTheme: true,
@@ -72,9 +74,11 @@ export default {
   created() {
     if (localStorage.getItem('timeFormat') != null) {
       this.settings.timeFormat = localStorage.getItem('timeFormat');
+      this.settings.method = localStorage.getItem('calcMethod');
     } else {
       this.getLocation();
       this.settings.timeFormat = 'h:mm A';
+      this.settings.method = this.determineCalcMethod();
     }
     window.addEventListener('popstate', this.handleHistoryChange);
   },
@@ -119,79 +123,129 @@ export default {
     },
     getTimes(coords) {
       const adhan = require('adhan');
-      const moment = require('moment');
 
-      // this.getLocation();
-      var date = new Date();
-      var coordinates = new adhan.Coordinates(coords.lat, coords.lon);
-      var params = adhan.CalculationMethod.Karachi();
+      // Define the settings for adhan
+      const coordinates = new adhan.Coordinates(coords.lat, coords.lon);
+      const date = new Date();
+      let params;
+      const method = this.settings.method;
+      switch (method) {
+        case 'karachi':
+          params = adhan.CalculationMethod.Karachi();
+          break;
+        case 'mwl':
+          params = adhan.CalculationMethod.MuslimWorldLeague();
+          break;
+        case 'egypt':
+          params = adhan.CalculationMethod.Egyptian();
+          break;
+        case 'makkah':
+          params = adhan.CalculationMethod.UmmAlQura();
+          break;
+        case 'kuwait':
+          params = adhan.CalculationMethod.Kuwait();
+          break;
+        case 'america':
+          params = adhan.CalculationMethod.NorthAmerica();
+          break;
+      }
       params.madhab = adhan.Madhab.Hanafi;
       params.highLatitudeRule = adhan.HighLatitudeRule.TwilightAngle;
-      var prayerTimes = new adhan.PrayerTimes(coordinates, date, params);
-      var formattedTime = adhan.Date.formattedTime;
-      let UTCOffset = moment
-        .duration(
-          moment()
-            .parseZone()
-            .format('Z')
-        )
-        .asHours();
-      var milFajr = formattedTime(prayerTimes.fajr, UTCOffset, '24h');
-      var milSunrise = formattedTime(prayerTimes.sunrise, UTCOffset, '24h');
-      var milDhuhr = formattedTime(prayerTimes.dhuhr, UTCOffset, '24h');
-      var milAsr = formattedTime(prayerTimes.asr, UTCOffset, '24h');
-      var milMaghrib = formattedTime(prayerTimes.maghrib, UTCOffset, '24h');
-      var milIsha = formattedTime(prayerTimes.isha, UTCOffset, '24h');
 
-      this.times.fajr = moment(milFajr, 'HH:mm').format(this.settings.timeFormat);
-      this.times.sunrise = moment(milSunrise, 'HH:mm').format(this.settings.timeFormat);
-      this.times.dhuhr = moment(milDhuhr, 'HH:mm').format(this.settings.timeFormat);
-      this.times.asr = moment(milAsr, 'HH:mm').format(this.settings.timeFormat);
-      this.times.maghrib = moment(milMaghrib, 'HH:mm').format(this.settings.timeFormat);
-      this.times.isha = moment(milIsha, 'HH:mm').format(this.settings.timeFormat);
+      // Initialize
+      const prayerTimes = new adhan.PrayerTimes(coordinates, date, params);
+
+      let formattedTimes = {
+        fajr: moment(prayerTimes.fajr).format(this.settings.timeFormat),
+        sunrise: moment(prayerTimes.sunrise).format(this.settings.timeFormat),
+        dhuhr: moment(prayerTimes.dhuhr).format(this.settings.timeFormat),
+        asr: moment(prayerTimes.asr).format(this.settings.timeFormat),
+        maghrib: moment(prayerTimes.maghrib).format(this.settings.timeFormat),
+        isha: moment(prayerTimes.isha).format(this.settings.timeFormat)
+      };
+
+      // Set data
+      this.times = formattedTimes;
       this.localTime = moment().format('MMMM Do YYYY');
       this.timezone =
         'GMT' +
         moment()
           .parseZone()
           .format('Z');
+      const { nextWaqt, timeToNextWaqt } = this.determineNextWaqt(formattedTimes);
+      this.nextWaqt = nextWaqt;
+      this.timeToNextWaqt = timeToNextWaqt;
 
-      let unixNow = moment().unix();
+      // Hide snackbar on success
+      this.settings.snackbar = false;
+    },
+    determineNextWaqt(formattedTimes) {
+      const unixNow = moment().unix();
 
-      let unixFajr = moment(milFajr, 'HH:mm').unix();
-      let unixSunrise = moment(milSunrise, 'HH:mm').unix();
-      let unixDhuhr = moment(milDhuhr, 'HH:mm').unix();
-      let unixAsr = moment(milAsr, 'HH:mm').unix();
-      let unixMaghrib = moment(milMaghrib, 'HH:mm').unix();
-      let unixIsha = moment(milIsha, 'HH:mm').unix();
+      const unixFajr = moment(formattedTimes.fajr, this.settings.timeFormat).unix();
+      const unixSunrise = moment(formattedTimes.sunrise, this.settings.timeFormat).unix();
+      const unixDhuhr = moment(formattedTimes.dhuhr, this.settings.timeFormat).unix();
+      const unixAsr = moment(formattedTimes.asr, this.settings.timeFormat).unix();
+      const unixMaghrib = moment(formattedTimes.maghrib, this.settings.timeFormat).unix();
+      const unixIsha = moment(formattedTimes.isha, this.settings.timeFormat).unix();
+
+      let nextWaqt;
+      let timeToNextWaqt;
 
       if (unixNow < unixFajr) {
-        this.nextWaqt = 'Fajr';
-        this.timeToNextWaqt = moment.unix(unixFajr).fromNow();
+        nextWaqt = 'Fajr';
+        timeToNextWaqt = moment.unix(unixFajr).fromNow();
       } else if (unixNow < unixSunrise && unixNow > unixFajr) {
-        this.nextWaqt = 'Sunrise';
-        this.timeToNextWaqt = moment.unix(unixSunrise).fromNow();
+        nextWaqt = 'Sunrise';
+        timeToNextWaqt = moment.unix(unixSunrise).fromNow();
       } else if (unixNow < unixDhuhr && unixNow > unixSunrise) {
-        this.nextWaqt = 'Dhuhr';
-        this.timeToNextWaqt = moment.unix(unixDhuhr).fromNow();
+        nextWaqt = 'Dhuhr';
+        timeToNextWaqt = moment.unix(unixDhuhr).fromNow();
       } else if (unixNow < unixAsr && unixNow > unixDhuhr) {
-        this.nextWaqt = 'Asr';
-        this.timeToNextWaqt = moment.unix(unixAsr).fromNow();
+        nextWaqt = 'Asr';
+        timeToNextWaqt = moment.unix(unixAsr).fromNow();
       } else if (unixNow < unixMaghrib && unixNow > unixAsr) {
-        this.nextWaqt = 'Maghrib';
-        this.timeToNextWaqt = moment.unix(unixMaghrib).fromNow();
+        nextWaqt = 'Maghrib';
+        timeToNextWaqt = moment.unix(unixMaghrib).fromNow();
       } else if (unixNow < unixIsha && unixNow > unixMaghrib) {
-        this.nextWaqt = 'Isha';
-        this.timeToNextWaqt = moment.unix(unixIsha).fromNow();
+        nextWaqt = 'Isha';
+        timeToNextWaqt = moment.unix(unixIsha).fromNow();
+      } else if (unixNow > unixIsha) {
+        nextWaqt = 'Fajr';
+        timeToNextWaqt = 'tomorrow';
       }
 
-      this.settings.snackbar = false;
+      return {
+        nextWaqt,
+        timeToNextWaqt
+      };
+    },
+    /** Determines calculation method coarsely from timezone */
+    determineCalcMethod() {
+      const timeZone = parseInt(
+        moment()
+          .parseZone()
+          .format('Z')
+      );
+      if (timeZone >= 0 && timeZone <= 2) {
+        return 'mwl';
+      } else if (timeZone >= 3 && timeZone <= 4) {
+        return 'makkah';
+      } else if (timeZone >= 5 && timeZone <= 7) {
+        return 'karachi';
+      } else if (timeZone >= 8 && timeZone <= 12) {
+        return 'mwl';
+      } else {
+        return 'mwl';
+      }
     },
     updateSettings(parameters) {
       this.settings.timeFormat = parameters.timeFormat;
+      this.settings.method = parameters.calcMethod;
       this.settings.dialog = false;
       this.getLocation();
       localStorage.setItem('timeFormat', parameters.timeFormat);
+      localStorage.setItem('calcMethod', parameters.calcMethod);
       location.reload();
     }
   },

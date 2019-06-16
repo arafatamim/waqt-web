@@ -7,11 +7,22 @@
         <font-awesome-icon icon="save" id="closeIcon" class="iconButton" @click="closeAndUpdate()"/>
       </div>
       <div id="divSettingsContent">
-        <div class="control2">
+        <div class="control">
           Time format
           <select id="cmbFormat" v-model="parameters.timeFormat">
             <option value="h:mm A">12-hour</option>
             <option value="H:mm">24-hour</option>
+          </select>
+        </div>
+        <div class="control">
+          Calculation method
+          <select id="cmbMethod" v-model="parameters.calcMethod">
+            <option value="karachi">Karachi</option>
+            <option value="mwl">Muslim World League</option>
+            <option value="egypt">Egyptian</option>
+            <option value="makkah">Makkah</option>
+            <option value="kuwait">Kuwait</option>
+            <option value="america">North America</option>
           </select>
         </div>
         <div id="localTime">Local Time: {{ localtime }}</div>
@@ -50,13 +61,15 @@ export default {
   },
   props: {
     tformat: String,
+    calcMethod: String,
     localtime: String,
     timezone: String
   },
   data() {
     return {
       parameters: {
-        timeFormat: this.tformat
+        timeFormat: this.tformat,
+        calcMethod: this.calcMethod
       }
     };
   },
@@ -147,11 +160,9 @@ export default {
     width: 221px;
   }
   #cmbFormat {
-    width: 221px;
+    width: 175px;
   }
-  .control1,
-  .control2,
-  .control3 {
+  .control {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
