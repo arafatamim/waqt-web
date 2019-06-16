@@ -3,6 +3,7 @@
     <settings
       v-if="settings.dialog"
       :tformat="settings.timeFormat"
+      :calcMethod="settings.method"
       :localtime="localTime"
       :timezone="timezone"
       @updateParameters="updateSettings"
@@ -57,7 +58,7 @@ export default {
         city: '',
         country: '',
         timeFormat: 'h:mm A',
-        method: 1,
+        method: 'karachi',
         snackbar: false,
         dialog: false,
         darkTheme: true,
@@ -73,9 +74,11 @@ export default {
   created() {
     if (localStorage.getItem('timeFormat') != null) {
       this.settings.timeFormat = localStorage.getItem('timeFormat');
+      this.settings.method = localStorage.getItem('calcMethod');
     } else {
       this.getLocation();
       this.settings.timeFormat = 'h:mm A';
+      this.settings.method = this.determineCalcMethod();
     }
     window.addEventListener('popstate', this.handleHistoryChange);
   },
@@ -124,7 +127,28 @@ export default {
       // Define the settings for adhan
       const coordinates = new adhan.Coordinates(coords.lat, coords.lon);
       const date = new Date();
-      let params = adhan.CalculationMethod.Karachi();
+      let params;
+      const method = this.settings.method;
+      switch (method) {
+        case 'karachi':
+          params = adhan.CalculationMethod.Karachi();
+          break;
+        case 'mwl':
+          params = adhan.CalculationMethod.MuslimWorldLeague();
+          break;
+        case 'egypt':
+          params = adhan.CalculationMethod.Egyptian();
+          break;
+        case 'makkah':
+          params = adhan.CalculationMethod.UmmAlQura();
+          break;
+        case 'kuwait':
+          params = adhan.CalculationMethod.Kuwait();
+          break;
+        case 'america':
+          params = adhan.CalculationMethod.NorthAmerica();
+          break;
+      }
       params.madhab = adhan.Madhab.Hanafi;
       params.highLatitudeRule = adhan.HighLatitudeRule.TwilightAngle;
 
@@ -186,6 +210,9 @@ export default {
       } else if (unixNow < unixIsha && unixNow > unixMaghrib) {
         nextWaqt = 'Isha';
         timeToNextWaqt = moment.unix(unixIsha).fromNow();
+      } else if (unixNow > unixIsha) {
+        nextWaqt = 'Fajr';
+        timeToNextWaqt = 'tomorrow';
       }
 
       return {
@@ -193,11 +220,32 @@ export default {
         timeToNextWaqt
       };
     },
+    /** Determines calculation method coarsely from timezone */
+    determineCalcMethod() {
+      const timeZone = parseInt(
+        moment()
+          .parseZone()
+          .format('Z')
+      );
+      if (timeZone >= 0 && timeZone <= 2) {
+        return 'mwl';
+      } else if (timeZone >= 3 && timeZone <= 4) {
+        return 'makkah';
+      } else if (timeZone >= 5 && timeZone <= 7) {
+        return 'karachi';
+      } else if (timeZone >= 8 && timeZone <= 12) {
+        return 'mwl';
+      } else {
+        return 'mwl';
+      }
+    },
     updateSettings(parameters) {
       this.settings.timeFormat = parameters.timeFormat;
+      this.settings.method = parameters.calcMethod;
       this.settings.dialog = false;
       this.getLocation();
       localStorage.setItem('timeFormat', parameters.timeFormat);
+      localStorage.setItem('calcMethod', parameters.calcMethod);
       location.reload();
     }
   },
