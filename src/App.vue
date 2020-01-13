@@ -4,13 +4,14 @@
       v-if="settings.dialog"
       :tformat="settings.timeFormat"
       :calcMethod="settings.method"
+      :lateAsr="settings.lateAsr"
       :localtime="localTime"
       :timezone="timezone"
       @updateParameters="updateSettings"
       @closeWithoutSaving="settings.dialog = false"
     />
     <div id="secondBossContainer">
-      <headerbox @showDialog="settings.dialog = true"/>
+      <headerbox @showDialog="settings.dialog = true" />
       <div class="contentBoxes">
         <timebox
           v-for="(val, i) in waqts"
@@ -21,7 +22,7 @@
           :timeToNextWaqt="timeToNextWaqt"
         />
       </div>
-      <snackbar v-show="settings.snackbar" @reloadTimes="getLocation()"/>
+      <snackbar v-show="settings.snackbar" @reloadTimes="getLocation()" />
     </div>
   </div>
 </template>
@@ -59,9 +60,10 @@ export default {
         country: '',
         timeFormat: 'h:mm A',
         method: 'karachi',
+        lateAsr: true,
         snackbar: false,
         dialog: false,
-        darkTheme: true,
+        darkTheme: false, // ignore this
         loader: {
           loading: false
         }
@@ -75,10 +77,12 @@ export default {
     if (localStorage.getItem('timeFormat') != null) {
       this.settings.timeFormat = localStorage.getItem('timeFormat');
       this.settings.method = localStorage.getItem('calcMethod');
+      this.settings.lateAsr = localStorage.getItem('lateAsr') == 'true';
     } else {
       this.getLocation();
       this.settings.timeFormat = 'h:mm A';
       this.settings.method = this.determineCalcMethod();
+      this.settings.lateAsr = true;
     }
     window.addEventListener('popstate', this.handleHistoryChange);
   },
@@ -149,7 +153,17 @@ export default {
           params = adhan.CalculationMethod.NorthAmerica();
           break;
       }
-      params.madhab = adhan.Madhab.Hanafi;
+      // Asr method; Shafi has early Asrs, while Hanafi delays Asr time
+      const lateAsr = this.settings.lateAsr;
+      switch (lateAsr) {
+        case true:
+          params.madhab = adhan.Madhab.Hanafi;
+          break;
+        case false:
+          params.madhab = adhan.Madhab.Shafi;
+          break;
+      }
+      // For regions in higher latitudes
       params.highLatitudeRule = adhan.HighLatitudeRule.TwilightAngle;
 
       // Initialize
@@ -242,11 +256,13 @@ export default {
     updateSettings(parameters) {
       this.settings.timeFormat = parameters.timeFormat;
       this.settings.method = parameters.calcMethod;
+      this.settings.lateAsr = parameters.lateAsr;
       this.settings.dialog = false;
       this.getLocation();
       localStorage.setItem('timeFormat', parameters.timeFormat);
       localStorage.setItem('calcMethod', parameters.calcMethod);
-      location.reload();
+      localStorage.setItem('lateAsr', parameters.lateAsr);
+      // location.reload();
     }
   },
   watch: {
@@ -267,19 +283,19 @@ export default {
 .contentBoxes {
   display: grid;
   grid-template-columns: repeat(3, 33.3%);
-  grid-template-rows: repeat(2, 220px);
+  grid-template-rows: repeat(2, 210px);
 }
 
 @media (max-width: 800px) {
   .contentBoxes {
     grid-template-columns: repeat(2, 50%);
-    grid-template-rows: repeat(3, 220px);
+    grid-template-rows: repeat(3, 210px);
   }
 }
 @media (max-width: 575px) {
   .contentBoxes {
     grid-template-columns: 100%;
-    grid-template-rows: repeat(6, 220px);
+    grid-template-rows: repeat(6, 210px);
   }
   #headerBox {
     margin: 30px 50px 10px 50px;
