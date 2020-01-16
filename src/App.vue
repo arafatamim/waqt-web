@@ -34,6 +34,9 @@ import Timebox from '@/components/Timebox.vue';
 import Settings from '@/components/Settings.vue';
 import { setInterval } from 'timers';
 const moment = require('moment');
+require('moment/locale/en-gb');
+
+moment.locale('en-gb');
 
 export default {
   components: {
