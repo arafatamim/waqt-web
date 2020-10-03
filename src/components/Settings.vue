@@ -94,7 +94,7 @@ export default {
       this.$emit('update-parameters', this.parameters);
     },
     windowKeyDown: function(e) {
-      if (e.keyCode === 27) {
+      if (e.key === 'Escape') {
         this.$emit('close-without-saving');
       }
     }
@@ -172,6 +172,9 @@ export default {
   display: grid;
   grid-row-gap: 12px;
   font-size: 11pt;
+  select {
+    -moz-appearance: none;
+  }
   #cmbFormat,
   #cmbMethod,
   #cmbAsrTime {
