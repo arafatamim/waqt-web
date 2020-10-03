@@ -1,15 +1,16 @@
 <template>
   <div id="bossContainer">
-    <settings
-      v-if="settings.dialog"
-      :tformat="settings.timeFormat"
-      :calcMethod="settings.method"
-      :lateAsr="settings.lateAsr"
-      :localtime="localTime"
-      :timezone="timezone"
-      @update-parameters="updateSettings"
-      @close-without-saving="settings.dialog = false"
-    />
+    <transition name="fade">
+      <settings
+        v-if="settings.dialog"
+        :tformat="settings.timeFormat"
+        :calcMethod="settings.method"
+        :lateAsr="settings.lateAsr"
+        :localtime="localTime"
+        :timezone="timezone"
+        @update-parameters="updateSettings"
+        @close-without-saving="settings.dialog = false"
+    /></transition>
     <div id="secondBossContainer">
       <headerbox @show-dialog="settings.dialog = true" />
       <div class="contentBoxes">
@@ -318,5 +319,14 @@ export default {
     transform: translate(-50%, -50%);
     width: 80%;
   }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

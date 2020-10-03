@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div id="bg" @click="$emit('close-without-saving')"></div>
+    <transition name="fade">
+      <div id="bg" @click="$emit('close-without-saving')"></div>
+    </transition>
     <div id="settingsBox">
       <div id="divSettingsHeader">
         <div id="settingsText">Settings</div>
