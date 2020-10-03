@@ -2,10 +2,10 @@
   <transition name="slide">
     <div class="errorBanner">
       <span>
-        <font-awesome-icon id="icon" icon="times-circle"/>
+        <font-awesome-icon id="icon" icon="times-circle" />
         <span class="bannerText">Something went wrong</span>
       </span>
-      <span id="btnReloadbg" @click="$emit('reloadTimes')">
+      <span id="btnReloadbg" @click="$emit('reload')">
         <font-awesome-icon icon="redo"></font-awesome-icon>
       </span>
     </div>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="bg" @click="$emit('closeWithoutSaving')"></div>
+    <div id="bg" @click="$emit('close-without-saving')"></div>
     <div id="settingsBox">
       <div id="divSettingsHeader">
         <div id="settingsText">Settings</div>
@@ -88,12 +88,12 @@ export default {
     };
   },
   methods: {
-    closeAndUpdate: function(parameters) {
-      this.$emit('updateParameters', this.parameters);
+    closeAndUpdate: function() {
+      this.$emit('update-parameters', this.parameters);
     },
     windowKeyDown: function(e) {
       if (e.keyCode === 27) {
-        this.$emit('closeWithoutSaving');
+        this.$emit('close-without-saving');
       }
     }
   },
@@ -170,7 +170,9 @@ export default {
   display: grid;
   grid-row-gap: 12px;
   font-size: 11pt;
-  #cmbFormat, #cmbMethod, #cmbAsrTime {
+  #cmbFormat,
+  #cmbMethod,
+  #cmbAsrTime {
     width: 175px;
   }
   .control {

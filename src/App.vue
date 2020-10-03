@@ -7,11 +7,11 @@
       :lateAsr="settings.lateAsr"
       :localtime="localTime"
       :timezone="timezone"
-      @updateParameters="updateSettings"
-      @closeWithoutSaving="settings.dialog = false"
+      @update-parameters="updateSettings"
+      @close-without-saving="settings.dialog = false"
     />
     <div id="secondBossContainer">
-      <headerbox @showDialog="settings.dialog = true" />
+      <headerbox @show-dialog="settings.dialog = true" />
       <div class="contentBoxes">
         <timebox
           v-for="(val, i) in waqts"
@@ -22,7 +22,7 @@
           :timeToNextWaqt="timeToNextWaqt"
         />
       </div>
-      <snackbar v-show="settings.snackbar" @reloadTimes="getLocation()" />
+      <snackbar v-show="settings.snackbar" @reload="getLocation()" />
     </div>
   </div>
 </template>

@@ -5,7 +5,7 @@
       id="headerSettings"
       class="iconButton"
       icon="cog"
-      @click="$emit('showDialog')"
+      @click="$emit('show-dialog')"
     />
   </div>
 </template>
