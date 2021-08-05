@@ -2,60 +2,49 @@
   "name": "waqt",
   "version": "1.1.0",
   "private": true,
+  "type": "module",
+  "license": "MIT",
   "scripts": {
-    "start": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit"
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.19",
-    "@fortawesome/free-brands-svg-icons": "^5.9.0",
-    "@fortawesome/free-solid-svg-icons": "^5.9.0",
-    "@fortawesome/vue-fontawesome": "^0.1.6",
-    "adhan": "^3.0.0",
-    "moment": "^2.24.0",
-    "register-service-worker": "^1.6.2",
-    "typeface-poppins": "0.0.72",
-    "vue": "^2.6.10"
+    "adhan": "^4.2.1",
+    "date-fns": "^2.23.0",
+    "svelte-icons": "^2.1.0",
+    "typeface-poppins": "^1.1.13"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.9.2",
-    "@vue/cli-plugin-eslint": "^3.9.2",
-    "@vue/cli-plugin-pwa": "^3.9.0",
-    "@vue/cli-plugin-unit-jest": "^3.9.0",
-    "@vue/cli-service": "^3.9.2",
-    "@vue/eslint-config-prettier": "^4.0.1",
-    "@vue/test-utils": "1.0.0-beta.29",
-    "axios": "^0.19.0",
-    "babel-core": "6.26.3",
-    "babel-eslint": "^10.0.2",
-    "babel-jest": "^24.8.0",
-    "eslint": "^6.0.1",
-    "eslint-plugin-vue": "^5.2.3",
-    "node-sass": "^4.12.0",
-    "sass-loader": "^7.1.0",
-    "vue-cli-plugin-axios": "0.0.4",
-    "vue-template-compiler": "^2.6.10",
-    "webpack-bundle-analyzer": "^3.6.0"
+    "@sveltejs/vite-plugin-svelte": "^1.0.0-next.15",
+    "@tsconfig/svelte": "^2.0.1",
+    "eslint": "^7.32.0",
+    "eslint-plugin-svelte3": "^3.2.0",
+    "prettier": "^2.3.2",
+    "prettier-plugin-svelte": "^2.3.1",
+    "sass": "^1.37.0",
+    "svelte": "^3.41.0",
+    "svelte-check": "^2.2.4",
+    "svelte-preprocess": "^4.7.4",
+    "typescript": "^4.3.5",
+    "vite": "^2.4.4",
+    "vite-plugin-html": "^2.0.7",
+    "vite-plugin-pwa": "^0.9.3",
+    "workbox-window": "^6.1.5"
   },
   "eslintConfig": {
     "root": true,
     "env": {
-      "node": true
+      "browser": true
     },
-    "extends": [
-      "plugin:vue/essential",
-      "@vue/prettier"
+    "plugins": [
+      "svelte3"
     ],
     "rules": {},
     "parserOptions": {
-      "parser": "babel-eslint"
-    }
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
+      "ecmaVersion": 2019,
+      "sourceType": "module"
     }
   },
   "browserslist": [

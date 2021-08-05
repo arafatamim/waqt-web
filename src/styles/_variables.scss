@@ -1,0 +1,42 @@
+:root {
+  --bg-color: #eee;
+  --text-color: #333;
+  --text-color-light: #5e5e5e;
+  --text-color-lighter: #8c8c8c;
+  --control-bg-color: #e1e1e1;
+  --control-bg-color-secondary: #cacaca;
+  --base-font: 'Poppins', 'Liberation Sans', sans-serif;
+}
+
+$text-color: (
+  light: #333,
+  dark: #eee,
+);
+$bg-color: (
+  light: #eee,
+  dark: #222,
+);
+$fajr-style: (
+  background: linear-gradient(135deg, #00055e 0%, #00055e 0%, #276de6 100%),
+  foreground: map-get($text-color, dark),
+);
+$sunrise-style: (
+  background: linear-gradient(315deg, #20bf55 0%, #01baef 74%),
+  foreground: map-get($text-color, light),
+);
+$dhuhr-style: (
+  background: linear-gradient(315deg, #f9d29d 0%, #ffd8cb 74%),
+  foreground: map-get($text-color, light),
+);
+$asr-style: (
+  background: linear-gradient(315deg, #fce043 0%, #fb7ba2 74%),
+  foreground: map-get($text-color, light),
+);
+$maghrib-style: (
+  background: linear-gradient(315deg, #d4418e 0%, #0652c5 74%),
+  foreground: map-get($text-color, dark),
+);
+$isha-style: (
+  background: linear-gradient(315deg, #203695 0%, #092070 74%),
+  foreground: map-get($text-color, dark),
+);

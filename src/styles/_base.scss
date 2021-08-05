@@ -1,101 +1,81 @@
-$text-color: (
-  light: #333,
-  dark: #eee
-);
-$bg-color: (
-  light: #eee,
-  dark: #222
-);
-
-$base-font: 'Poppins', 'Liberation Sans', sans-serif;
-
-$ui-theme: 'dark'; // 'light' or 'dark'
-
-$theme: (
-  text:
-    map-get(
-      $map: $text-color,
-      $key: $ui-theme
-    ),
-  bg:
-    map-get(
-      $map: $bg-color,
-      $key: $ui-theme
-    )
-);
-
-$main-bg: map-get(
-  $map: $theme,
-  $key: bg
-);
-
-$fajr-style: (
-  background: linear-gradient(135deg, #00055e 0%, #00055e 0%, #276de6 100%),
-  foreground: map-get($text-color, dark)
-);
-$sunrise-style: (
-  background: linear-gradient(315deg, #20bf55 0%, #01baef 74%),
-  foreground: map-get($text-color, light)
-);
-$dhuhr-style: (
-  background: linear-gradient(315deg, #f9d29d 0%, #ffd8cb 74%),
-  foreground: map-get($text-color, light)
-);
-$asr-style: (
-  background: linear-gradient(315deg, #fce043 0%, #fb7ba2 74%),
-  foreground: map-get($text-color, light)
-);
-$maghrib-style: (
-  background: linear-gradient(315deg, #d4418e 0%, #0652c5 74%),
-  foreground: map-get($text-color, dark)
-);
-$isha-style: (
-  background: linear-gradient(315deg, #203695 0%, #092070 74%),
-  foreground: map-get($text-color, dark)
-);
-
-$icon-button-color: lighten(
-  map-get(
-    $map: $theme,
-    $key: text
-  ),
-  15%
-);
+@import '_variables.scss';
 
 body {
-  background-color: $main-bg;
   margin: 5;
+  background-color: var(--bg-color);
+  // transition: background-color 1s;
+}
+
+%darkStyles {
+  --bg-color: #222;
+  --text-color: #eee;
+  --text-color-light: #c5c5c5;
+  --text-color-lighter: white;
+  --control-bg-color: #2f2f2f;
+  --control-bg-color-secondary: #444;
+}
+%lightStyles {
+  --bg-color: #eee;
+  --text-color: #333;
+  --text-color-light: #5e5e5e;
+  --text-color-lighter: #8c8c8c;
+  --control-bg-color: #e1e1e1;
+  --control-bg-color-secondary: #cacaca;
+}
+
+body.dark {
+  @extend %darkStyles;
+}
+body.light {
+  @extend %lightStyles;
 }
 div {
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
-%controlStyles {
-  @if $ui-theme == 'dark' {
-    background-color: lighten(map-get($map: $theme, $key: bg), 5%);
-  } @else {
-    background-color: darken(map-get($map: $theme, $key: bg), 5%);
-  }
-  padding: 5px 15px;
-  font-size: 11pt;
-  font-family: $base-font;
-  border: none;
-  border-radius: 100px;
-  color: map-get($map: $theme, $key: text);
-  outline: none;
+a {
+  color: var(--text-color-light);
+  text-decoration: none;
+  border-bottom: 1px solid var(--text-color-light);
   &:hover {
-    @if $ui-theme == 'dark' {
-      background-color: lighten(map-get($map: $theme, $key: bg), 10%);
-    } @else {
-      background-color: darken(map-get($map: $theme, $key: bg), 10%);
-    }
+    color: var(--text-color-lighter);
   }
   &:focus {
-    @if $ui-theme == 'dark' {
-      background-color: lighten(map-get($map: $theme, $key: bg), 10%);
-    } @else {
-      background-color: darken(map-get($map: $theme, $key: bg), 10%);
-    }
+    color: red;
+  }
+}
+%controlStyles {
+  // @if $ui-theme == 'dark' {
+  //   background-color: lighten(map-get($map: $theme, $key: bg), 5%);
+  // } @else {
+  //   background-color: darken(map-get($map: $theme, $key: bg), 5%);
+  // }
+  background-color: var(--control-bg-color);
+  padding: 5px 15px;
+  font-size: 11pt;
+  font-family: var(--base-font);
+  border: 2px solid transparent;
+  border-radius: 100px;
+  color: var(--text-color);
+  outline: none;
+  transition: background-color 150ms;
+  // &:hover {
+  //   @if $ui-theme == 'dark' {
+  //     background-color: lighten(map-get($map: $theme, $key: bg), 10%);
+  //   } @else {
+  //     background-color: darken(map-get($map: $theme, $key: bg), 10%);
+  //   }
+  // }
+  &:focus {
+    border: 2px solid var(--control-bg-color-secondary);
+  }
+  &:active {
+    //   @if $ui-theme == 'dark' {
+    //     background-color: lighten(map-get($map: $theme, $key: bg), 10%);
+    //   } @else {
+    //     background-color: darken(map-get($map: $theme, $key: bg), 10%);
+    //   }
+    background-color: var(--control-bg-color-secondary);
   }
 }
 button {
@@ -108,32 +88,53 @@ select {
 }
 input {
   @extend %controlStyles;
-  @if $ui-theme == 'dark' {
-    background-color: darken(map-get($map: $theme, $key: bg), 5%);
-  } @else {
-    background-color: darken(map-get($map: $theme, $key: bg), 10%);
-  }
+  // @if $ui-theme == 'dark' {
+  //   background-color: darken(map-get($map: $theme, $key: bg), 5%);
+  // } @else {
+  //   background-color: darken(map-get($map: $theme, $key: bg), 10%);
+  // }
   width: 100%;
   box-sizing: border-box;
-  &:hover {
-    @if $ui-theme == 'dark' {
-      background-color: darken(map-get($map: $theme, $key: bg), 6%);
-    } @else {
-      background-color: darken(map-get($map: $theme, $key: bg), 15%);
-    }
-  }
-  &:focus {
-    @if $ui-theme == 'dark' {
-      background-color: darken(map-get($map: $theme, $key: bg), 8%);
-    } @else {
-      background-color: darken(map-get($map: $theme, $key: bg), 20%);
-    }
-  }
+  // &:hover {
+  //   @if $ui-theme == 'dark' {
+  //     background-color: darken(map-get($map: $theme, $key: bg), 6%);
+  //   } @else {
+  //     background-color: darken(map-get($map: $theme, $key: bg), 15%);
+  //   }
+  // }
+  // &:focus {
+  //   @if $ui-theme == 'dark' {
+  //     background-color: darken(map-get($map: $theme, $key: bg), 8%);
+  //   } @else {
+  //     background-color: darken(map-get($map: $theme, $key: bg), 20%);
+  //   }
+  // }
 }
 .iconButton {
-  color: map-get($map: $theme, $key: text);
+  color: var(--text-color);
   cursor: pointer;
   &:hover {
-    color: lighten(map-get($map: $theme, $key: text), 10%);
+    color: var(--text-color-hover);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    --bg-color: #222;
+    --text-color: #eee;
+    --text-color-light: #c5c5c5;
+    --text-color-lighter: white;
+    --control-bg-color: #2f2f2f;
+    --control-bg-color-secondary: #444;
+  }
+}
+@media (prefers-color-scheme: light) {
+  body {
+    --bg-color: #eee;
+    --text-color: #333;
+    --text-color-light: #5e5e5e;
+    --text-color-lighter: #8c8c8c;
+    --control-bg-color: #e1e1e1;
+    --control-bg-color-secondary: #cacaca;
   }
 }
