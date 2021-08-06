@@ -33,12 +33,15 @@
       <div class="control">
         <label class="label" for="cmb-method">Calculation method</label>
         <select id="cmb-method" bind:value={$settingsStore.calcMethod}>
-          <option value="karachi">Karachi</option>
-          <option value="mwl">Muslim World League</option>
           <option value="egypt">Egyptian</option>
-          <option value="makkah">Makkah</option>
+          <option value="isna">Islamic Society of North America</option>
+          <option value="karachi">Karachi</option>
           <option value="kuwait">Kuwait</option>
-          <option value="america">North America</option>
+          <option value="makkah">Makkah</option>
+          <option value="mcw">Moonsighting Committee</option>
+          <option value="mwl">Muslim World League</option>
+          <option value="singapore">Singapore</option>
+          <option value="turkey">Turkey</option>
         </select>
       </div>
       <div class="control" id="latlong">

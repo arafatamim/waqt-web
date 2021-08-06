@@ -3,7 +3,6 @@
   import { PrayerTimes, Prayer, CalculationMethod } from 'adhan';
   import { formatDistanceStrict } from 'date-fns';
   import { timesStore, settingsStore } from './store/store';
-  import type { Prayers, Settings } from './store/store';
   import { fade } from 'svelte/transition';
   import Snackbar from './components/Snackbar.svelte';
   import Headerbox from './components/Headerbox.svelte';
@@ -43,7 +42,7 @@
       settingsStore.update((v) => ({
         colorScheme: localStorage.getItem('colorScheme') as ColorScheme,
         timeFormat: localStorage.getItem('timeFormat')!,
-        calcMethod: localStorage.getItem('calcMethod')!,
+        calcMethod: localStorage.getItem('calcMethod')! as CalcMethod,
         latitude: Number(localStorage.getItem('latitude')!),
         longitude: Number(localStorage.getItem('longitude')!),
       }));
@@ -136,7 +135,7 @@
     }
   }
 
-  function mapStringToParams(method: string): adhan.CalculationParameters {
+  function mapStringToParams(method: CalcMethod): adhan.CalculationParameters {
     switch (method) {
       case 'karachi':
         return CalculationMethod.Karachi();
@@ -148,8 +147,14 @@
         return CalculationMethod.UmmAlQura();
       case 'kuwait':
         return CalculationMethod.Kuwait();
-      case 'america':
+      case 'isna':
         return CalculationMethod.NorthAmerica();
+      case 'singapore':
+        return CalculationMethod.Singapore();
+      case 'turkey':
+        return CalculationMethod.Turkey();
+      case 'mcw':
+        return CalculationMethod.MoonsightingCommittee();
       default:
         throw new Error('Unsupported calculation method');
     }
@@ -175,7 +180,7 @@
   }
 
   /** Coarse approximation of method from timezone */
-  function determineCalcMethod() {
+  function determineCalcMethod(): CalcMethod {
     const timeZone = -(localTime.getTimezoneOffset() / 60);
     if (timeZone >= 0 && timeZone <= 2) {
       return 'mwl';
@@ -185,6 +190,8 @@
       return 'karachi';
     } else if (timeZone >= 8 && timeZone <= 12) {
       return 'mwl';
+    } else if (timeZone <= -5 && timeZone >= -9) {
+      return 'mcw';
     } else {
       return 'mwl';
     }

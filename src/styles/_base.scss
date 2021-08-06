@@ -84,6 +84,7 @@ button {
 }
 select {
   @extend %controlStyles;
+  max-width: 12rem;
   box-sizing: content-box;
 }
 input {

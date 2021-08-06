@@ -8,3 +8,31 @@ type Nullable<T> = {
 };
 
 type ColorScheme = 'default' | 'dark' | 'light';
+
+type CalcMethod =
+  | 'karachi'
+  | 'mwl'
+  | 'egypt'
+  | 'makkah'
+  | 'kuwait'
+  | 'isna'
+  | 'singapore'
+  | 'turkey'
+  | 'mcw';
+
+type Settings = {
+  timeFormat: string;
+  calcMethod: CalcMethod;
+  latitude: number | null;
+  longitude: number | null;
+  colorScheme: ColorScheme;
+};
+
+type Prayers = {
+  fajr: Date;
+  sunrise: Date;
+  dhuhr: Date;
+  asr: Date;
+  maghrib: Date;
+  isha: Date;
+};
