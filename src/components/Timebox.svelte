@@ -1,22 +1,11 @@
 <script lang="ts">
   import { format } from 'date-fns';
-  import { onDestroy } from 'svelte';
-  import { settingsStore } from '../store/store';
-
-  let timeFormat: string | null = null;
-
-  const unsubscribe = settingsStore.subscribe(
-    (v) => (timeFormat = v.timeFormat)
-  );
+  import { settings } from '../store/store';
 
   export let prayerName: string;
   export let prayerTime: Date;
   export let timeToNextPrayer: string;
   export let isNextPrayer: boolean;
-
-  onDestroy(() => {
-    unsubscribe();
-  });
 </script>
 
 <div class="content-box" class:active={isNextPrayer}>
@@ -27,12 +16,11 @@
     {/if}
   </div>
   <div class="waqt-time">
-    {#if prayerTime != null && timeFormat != null}
-      {format(prayerTime, timeFormat)}
+    {#if prayerTime != null && $settings.timeFormat != null}
+      {format(prayerTime, $settings.timeFormat)}
     {:else}
       ...
     {/if}
-    <!-- {prayerTime != null && timeFormat != null ? format(prayerTime, timeFormat) : '...'} -->
   </div>
 </div>
 

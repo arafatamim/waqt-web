@@ -1,14 +1,15 @@
 import { writable } from 'svelte/store';
+import { CalculationMethod } from 'adhan';
 
-export const settingsStore = writable<Settings>({
+export const settings = writable<Settings>({
   timeFormat: 'h:mm a',
-  calcMethod: 'karachi',
+  calcMethod: CalculationMethod.Karachi().method,
   latitude: null,
   longitude: null,
   colorScheme: 'default',
 });
 
-export const timesStore = writable<Nullable<Prayers>>({
+export const times = writable<Prayers>({
   fajr: null,
   sunrise: null,
   dhuhr: null,

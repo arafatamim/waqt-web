@@ -2,8 +2,9 @@
   import { fade, fly } from 'svelte/transition';
   import FaSave from 'svelte-icons/fa/FaSave.svelte';
   import FaGithub from 'svelte-icons/fa/FaGithub.svelte';
+  import { settings } from '../store/store';
   import image from '../assets/kofi3.png';
-  import { settingsStore } from '../store/store';
+  import { CalculationMethod } from 'adhan';
 
   export let localTime: Date;
   export let timeZone: string;
@@ -25,23 +26,31 @@
     <div id="settings-content">
       <div class="control">
         <label class="label" for="cmb-format">Time format</label>
-        <select id="cmb-format" bind:value={$settingsStore.timeFormat}>
+        <select id="cmb-format" bind:value={$settings.timeFormat}>
           <option value="h:mm a">12-hour</option>
           <option value="H:mm">24-hour</option>
         </select>
       </div>
       <div class="control">
         <label class="label" for="cmb-method">Calculation method</label>
-        <select id="cmb-method" bind:value={$settingsStore.calcMethod}>
-          <option value="egypt">Egyptian</option>
-          <option value="isna">Islamic Society of North America</option>
-          <option value="karachi">Karachi</option>
-          <option value="kuwait">Kuwait</option>
-          <option value="makkah">Makkah</option>
-          <option value="mcw">Moonsighting Committee</option>
-          <option value="mwl">Muslim World League</option>
-          <option value="singapore">Singapore</option>
-          <option value="turkey">Turkey</option>
+        <select id="cmb-method" bind:value={$settings.calcMethod}>
+          <option value={CalculationMethod.Egyptian().method}>Egyptian</option>
+          <option value={CalculationMethod.Karachi().method}>Karachi</option>
+          <option value={CalculationMethod.Kuwait().method}>Kuwait</option>
+          <option value={CalculationMethod.UmmAlQura().method}>Makkah</option>
+          <option value={CalculationMethod.MoonsightingCommittee().method}>
+            Moonsighting Committee
+          </option>
+          <option value={CalculationMethod.MuslimWorldLeague().method}>
+            Muslim World League
+          </option>
+          <option value={CalculationMethod.NorthAmerica().method}>
+            North America
+          </option>
+          <option value={CalculationMethod.Singapore().method}>
+            Singapore
+          </option>
+          <option value={CalculationMethod.Turkey().method}>Turkey</option>
         </select>
       </div>
       <div class="control" id="latlong">
@@ -51,7 +60,7 @@
             <input
               type="number"
               placeholder="Latitude"
-              bind:value={$settingsStore.latitude}
+              bind:value={$settings.latitude}
             />
             °&nbsp;N
           </span>
@@ -59,7 +68,7 @@
             <input
               type="number"
               placeholder="Longitude"
-              bind:value={$settingsStore.longitude}
+              bind:value={$settings.longitude}
             />°&nbsp;W
           </span>
         </div>
@@ -67,7 +76,7 @@
 
       <div class="control">
         <label class="label" for="color-scheme">Color scheme</label>
-        <select id="color-scheme" bind:value={$settingsStore.colorScheme}>
+        <select id="color-scheme" bind:value={$settings.colorScheme}>
           <option value="default">System default</option>
           <option value="dark">Dark</option>
           <option value="light">Light</option>
