@@ -8,7 +8,11 @@
   export let isNextPrayer: boolean;
 </script>
 
-<div class="content-box" class:active={isNextPrayer}>
+<div
+  class="content-box"
+  class:active={isNextPrayer}
+  class:muted={!isNextPrayer}
+>
   <div class="waqt-name">
     {prayerName}
     {#if isNextPrayer}
@@ -31,9 +35,9 @@
     margin: 10px;
     padding: 25px;
     color: white;
-    border-radius: 20px;
-    box-shadow: 0 0 0.5px rgba(#000, 0.1), 0 5px 8px rgba(#000, 0.15),
-      0 20px 20px rgba(#000, 0.2);
+    z-index: 1;
+    border-radius: 1.4rem;
+    backdrop-filter: blur(10px);
   }
   .content-box:nth-child(1) {
     color: map-get($map: $fajr-style, $key: foreground);
@@ -54,6 +58,7 @@
   .content-box:nth-child(5) {
     color: map-get($map: $maghrib-style, $key: foreground);
     background: map-get($map: $maghrib-style, $key: background);
+    backdrop-filter: blur(90px);
   }
   .content-box:nth-child(6) {
     color: map-get($map: $isha-style, $key: foreground);
@@ -73,11 +78,7 @@
     font-size: 40pt;
     white-space: nowrap;
     overflow: auto;
-    // text-overflow: ellipsis;
   }
-  // .nextWaqtTime {
-  //   font-size: 18pt;
-  // }
 
   @keyframes flash {
     0% {
@@ -88,7 +89,13 @@
     }
   }
   .active {
-    border: 5px solid #ccc;
-    animation: flash 1.5s infinite alternate;
+    z-index: 0;
+    box-shadow: 0 0 50px 2px white;
+    @include backlight(0, 0, 5vw, 1.2, var(--glow-color), var(--glow-color-secondary), 10s);
+    /* box-shadow: 0 0 50px 2px white, 0 0 90px 29px var(--glow-color),
+      0 0 130px 30px whitesmoke; */
+  }
+  .muted {
+    filter: grayscale(80%) opacity(50%);
   }
 </style>

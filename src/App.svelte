@@ -7,6 +7,7 @@
   import Headerbox from './components/Headerbox.svelte';
   import Timebox from './components/Timebox.svelte';
   import SettingsDialog from './components/Settings.svelte';
+  import { Ombro } from 'ombro';
 
   const prayers = [
     'Fajr',
@@ -33,7 +34,34 @@
     snackbar = true;
   }
 
+  const calculateShadows = () => {
+    let light: HTMLDivElement | undefined = document.querySelector<HTMLDivElement>('.active');
+    let muted: NodeListOf<HTMLDivElement> = document.querySelectorAll<HTMLDivElement>('.muted');
+    const pos = light?.getBoundingClientRect();
+    light.style.boxShadow = ''; // reset existing shadow before redrawing
+    for (const el of muted) {
+      el.style.boxShadow = ''; // reset shadow
+      const ombro = new Ombro(el, { opacity: 0.3, enableAutoUpdates: false });
+      ombro.setLightPosition(pos.x, pos.y);
+      ombro.draw();
+    }
+  };
+
+  $: {
+    if (nextPrayer != null && nextPrayer != Prayer.None) {
+      setTimeout(() => calculateShadows());
+    }
+  }
+
+  const resizeHandler = () => {
+    if (nextPrayer != null && nextPrayer != Prayer.None) {
+      setTimeout(() => calculateShadows());
+    }
+  };
+
   onMount(() => {
+    window.addEventListener('resize', resizeHandler);
+
     if (localStorage.getItem('timeFormat') != null) {
       $settings = {
         colorScheme: localStorage.getItem('colorScheme') as ColorScheme,
@@ -63,6 +91,7 @@
 
   onDestroy(() => {
     clearInterval(interval);
+    window.removeEventListener('resize', calculateShadows);
   });
 
   function saveToStorage() {
@@ -112,6 +141,19 @@
 
     // Set data
     nextPrayer = prayerTimes.nextPrayer(localTime);
+    /* nextPrayer = Prayer.Sunrise; */
+    if (nextPrayer != Prayer.None) {
+      document.documentElement.style.setProperty(
+        '--glow-color',
+        `var(--${prayerEnumToString(nextPrayer)?.toLowerCase() ?? "noop"}-color)`
+      );
+      document.documentElement.style.setProperty(
+        '--glow-color-secondary',
+        `var(--${prayerEnumToString(
+          nextPrayer
+        )?.toLowerCase() ?? "noop"}-color-secondary)`
+      );
+    }
     if (nextPrayer !== Prayer.None) {
       timeToNextPrayer = formatDistanceStrict(
         prayerTimes.timeForPrayer(nextPrayer),
@@ -189,7 +231,7 @@
     {#each prayers as prayer}
       <Timebox
         prayerName={prayer}
-        prayerTime={$times[prayer.toLowerCase()]}
+        prayerTime={$times[prayer?.toLowerCase()]}
         isNextPrayer={prayerEnumToString(nextPrayer) === prayer}
         {timeToNextPrayer}
       />

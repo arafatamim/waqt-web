@@ -1,11 +1,27 @@
 :root {
-  --bg-color: #eee;
+  --bg-color: #eeeeee00;
   --text-color: #333;
   --text-color-light: #5e5e5e;
   --text-color-lighter: #8c8c8c;
   --control-bg-color: #e1e1e1;
   --control-bg-color-secondary: #cacaca;
   --base-font: 'Poppins', 'Liberation Sans', sans-serif;
+
+  --glow-color: #efefef;
+  --glow-color-secondary: #ffffff;
+
+  --fajr-color: #1e2d7c;
+  --fajr-color-secondary: #276de6;
+  --sunrise-color: #20bf55;
+  --sunrise-color-secondary: #01baef;
+  --dhuhr-color: #f9d29d;
+  --dhuhr-color-secondary: #ffd8cb;
+  --asr-color: #fce043;
+  --asr-color-secondary: #fb7ba2;
+  --maghrib-color: #d4418e;
+  --maghrib-color-secondary: #0652c5;
+  --isha-color: #203695;
+  --isha-color-secondary: #092070;
 }
 
 $text-color: (
@@ -17,26 +33,61 @@ $bg-color: (
   dark: #222,
 );
 $fajr-style: (
-  background: linear-gradient(135deg, #00055e 0%, #00055e 0%, #276de6 100%),
+  background: linear-gradient(135deg, var(--fajr-color) 0%, var(--fajr-color-secondary) 100%),
   foreground: map-get($text-color, dark),
 );
 $sunrise-style: (
-  background: linear-gradient(315deg, #20bf55 0%, #01baef 74%),
+  background: linear-gradient(315deg, var(--sunrise-color) 0%, var(--sunrise-color-secondary) 74%),
   foreground: map-get($text-color, light),
 );
 $dhuhr-style: (
-  background: linear-gradient(315deg, #f9d29d 0%, #ffd8cb 74%),
+  background: linear-gradient(315deg, var(--dhuhr-color) 0%, var(--dhuhr-color-secondary) 74%),
   foreground: map-get($text-color, light),
 );
 $asr-style: (
-  background: linear-gradient(315deg, #fce043 0%, #fb7ba2 74%),
+  background: linear-gradient(315deg, var(--asr-color) 0%, var(--asr-color-secondary) 74%),
   foreground: map-get($text-color, light),
 );
 $maghrib-style: (
-  background: linear-gradient(315deg, #d4418e 0%, #0652c5 74%),
+  background: linear-gradient(315deg, var(--maghrib-color) 0%, var(--maghrib-color-secondary) 74%),
   foreground: map-get($text-color, dark),
 );
 $isha-style: (
-  background: linear-gradient(315deg, #203695 0%, #092070 74%),
+  background: linear-gradient(315deg, var(--isha-color) 0%, var(--isha-color-secondary) 74%),
   foreground: map-get($text-color, dark),
 );
+
+@mixin backlight($x, $y, $spread, $size, $colorA, $colorB, $duration) {
+  &:after {
+    position: absolute;
+    content: '';
+    top: $y;
+    left: $x;
+    right: 0;
+    z-index: -1;
+    height: 100%;
+    width: 100%;
+    margin: 0 auto;
+    transform: scale($size);
+    -webkit-filter: blur($spread);
+    -moz-filter: blur($spread);
+    -ms-filter: blur($spread);
+    filter:  blur($spread);
+    background: linear-gradient(270deg, $colorA, $colorB);
+    background-size: 200% 200%;
+    animation: animateGlow $duration ease infinite;
+
+    @keyframes animateGlow {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+  }
+}
+

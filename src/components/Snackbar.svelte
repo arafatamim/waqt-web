@@ -51,6 +51,7 @@
     justify-content: space-between;
     max-width: 100%;
     box-sizing: border-box;
+    z-index: 50;
   }
 
   #btn-reload {

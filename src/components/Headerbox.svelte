@@ -19,7 +19,7 @@
 
   #header-box {
     font-family: var(--base-font);
-    color: #eee;
+    color: #ddd;
     padding: 20px;
     font-size: 20pt;
     display: flex;
@@ -27,10 +27,11 @@
     justify-content: space-between;
     align-items: center;
     #header-text {
-      color: var(--text-color);
+      color: #bbb;
     }
   }
   .icon {
+    color: #bbb;
     width: 1.6rem;
     height: 1.6rem;
   }
