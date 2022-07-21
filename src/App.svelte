@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { PrayerTimes, Prayer, CalculationMethod } from 'adhan';
+  import { PrayerTimes, Prayer, CalculationMethod, Coordinates } from 'adhan';
+  import type { ValueOf } from 'adhan/lib/types/TypeUtils';
   import { formatDistanceStrict } from 'date-fns';
   import { times, settings } from './store/store';
   import Snackbar from './components/Snackbar.svelte';
@@ -8,6 +9,8 @@
   import Timebox from './components/Timebox.svelte';
   import SettingsDialog from './components/Settings.svelte';
   import { Ombro } from 'ombro';
+
+  type Prayer = ValueOf<typeof Prayer>;
 
   const prayers = [
     'Fajr',
@@ -22,7 +25,7 @@
   const interval = setInterval(() => setTimes().catch(setError), 60 * 1000);
 
   let localTime: Date = new Date();
-  let nextPrayer: Prayer;
+  let nextPrayer: Prayer = Prayer.None;
   let timeToNextPrayer: string;
   let snackbar = false;
   let dialog = false;
@@ -35,14 +38,20 @@
   }
 
   const calculateShadows = () => {
-    let light: HTMLDivElement | undefined = document.querySelector<HTMLDivElement>('.active');
-    let muted: NodeListOf<HTMLDivElement> = document.querySelectorAll<HTMLDivElement>('.muted');
-    const pos = light?.getBoundingClientRect();
+    let light: HTMLDivElement | undefined =
+      document.querySelector<HTMLDivElement>('.active');
+    let muted = document.querySelectorAll<HTMLDivElement>('.muted');
+    if (light == null) {
+      return;
+    }
+    const pos = light.getBoundingClientRect();
+    const lightX = (pos.left + pos.right) / 2,
+      lightY = (pos.top + pos.bottom) / 2;
     light.style.boxShadow = ''; // reset existing shadow before redrawing
     for (const el of muted) {
       el.style.boxShadow = ''; // reset shadow
       const ombro = new Ombro(el, { opacity: 0.3, enableAutoUpdates: false });
-      ombro.setLightPosition(pos.x, pos.y);
+      ombro.setLightPosition(lightX, lightY);
       ombro.draw();
     }
   };
@@ -132,37 +141,39 @@
 
     // Define the settings for adhan
     const prayerTimes = new PrayerTimes(
-      { latitude, longitude },
+      new Coordinates(latitude, longitude),
       localTime,
       CalculationMethod[$settings.calcMethod]()
     );
+
     const { fajr, sunrise, dhuhr, asr, maghrib, isha } = prayerTimes;
     $times = { fajr, sunrise, dhuhr, asr, maghrib, isha };
 
     // Set data
     nextPrayer = prayerTimes.nextPrayer(localTime);
-    /* nextPrayer = Prayer.Sunrise; */
     if (nextPrayer != Prayer.None) {
       document.documentElement.style.setProperty(
         '--glow-color',
-        `var(--${prayerEnumToString(nextPrayer)?.toLowerCase() ?? "noop"}-color)`
+        `var(--${
+          prayerEnumToString(nextPrayer)?.toLowerCase() ?? 'noop'
+        }-color)`
       );
       document.documentElement.style.setProperty(
         '--glow-color-secondary',
-        `var(--${prayerEnumToString(
-          nextPrayer
-        )?.toLowerCase() ?? "noop"}-color-secondary)`
+        `var(--${
+          prayerEnumToString(nextPrayer)?.toLowerCase() ?? 'noop'
+        }-color-secondary)`
       );
     }
     if (nextPrayer !== Prayer.None) {
-      timeToNextPrayer = formatDistanceStrict(
-        prayerTimes.timeForPrayer(nextPrayer),
-        localTime,
-        {
-          addSuffix: true,
-          roundingMethod: 'round',
-        }
-      );
+      const nextPrayerTime = prayerTimes.timeForPrayer(nextPrayer);
+      if (isNaN(nextPrayerTime.getTime())) {
+        return;
+      }
+      timeToNextPrayer = formatDistanceStrict(nextPrayerTime, localTime, {
+        addSuffix: true,
+        roundingMethod: 'round',
+      });
     }
   }
 

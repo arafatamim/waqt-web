@@ -1,5 +1,5 @@
 import App from './App.svelte';
-import 'typeface-poppins';
+import '@fontsource/poppins/latin-400.css';
 import './styles/_base.scss';
 import { registerSW } from 'virtual:pwa-register';
 

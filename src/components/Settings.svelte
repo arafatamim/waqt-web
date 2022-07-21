@@ -69,7 +69,7 @@
               type="number"
               placeholder="Longitude"
               bind:value={$settings.longitude}
-            />°&nbsp;W
+            />°&nbsp;E
           </span>
         </div>
       </div>

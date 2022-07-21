@@ -20,7 +20,7 @@
     {/if}
   </div>
   <div class="waqt-time">
-    {#if prayerTime != null && $settings.timeFormat != null}
+    {#if prayerTime != null && !isNaN(prayerTime.getTime()) && $settings.timeFormat != null}
       {format(prayerTime, $settings.timeFormat)}
     {:else}
       ...
@@ -89,11 +89,17 @@
     }
   }
   .active {
-    z-index: 0;
-    box-shadow: 0 0 50px 2px white;
-    @include backlight(0, 0, 5vw, 1.2, var(--glow-color), var(--glow-color-secondary), 10s);
-    /* box-shadow: 0 0 50px 2px white, 0 0 90px 29px var(--glow-color),
-      0 0 130px 30px whitesmoke; */
+    z-index: 99;
+    box-shadow: 0 0 25px 2px white, inset 0 0 30px 2px rgba(255, 255, 255, 0.5);
+    @include backlight(
+      0,
+      0,
+      5vw,
+      1.2,
+      var(--glow-color),
+      var(--glow-color-secondary),
+      10s
+    );
   }
   .muted {
     filter: grayscale(80%) opacity(50%);
