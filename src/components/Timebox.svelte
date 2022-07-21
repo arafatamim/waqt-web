@@ -69,7 +69,13 @@
     font-size: 20pt;
     white-space: nowrap;
     overflow: auto;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
     opacity: 80%;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .waqt-time {
