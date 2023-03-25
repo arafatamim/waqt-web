@@ -76,6 +76,7 @@
         colorScheme: localStorage.getItem('colorScheme') as ColorScheme,
         timeFormat: localStorage.getItem('timeFormat')!,
         calcMethod: localStorage.getItem('calcMethod')!,
+        city: localStorage.getItem('city') ?? null,
         latitude: Number(localStorage.getItem('latitude')!),
         longitude: Number(localStorage.getItem('longitude')!),
       };
@@ -85,6 +86,7 @@
         .then(([latitude, longitude]) => {
           $settings = {
             ...$settings,
+            city: null,
             calcMethod: determineCalcMethod(),
             timeFormat: 'h:mm a',
             latitude,
@@ -94,7 +96,12 @@
         .then(() => {
           init();
         })
-        .catch(setError);
+        .catch((e) => {
+          if (e instanceof GeolocationPositionError) {
+            setError(new Error('Could not automatically detect your location'));
+          }
+          dialog = true;
+        });
     }
   });
 
@@ -106,6 +113,7 @@
   function saveToStorage() {
     localStorage.setItem('timeFormat', $settings.timeFormat);
     localStorage.setItem('calcMethod', $settings.calcMethod);
+    localStorage.setItem('city', $settings.city);
     localStorage.setItem('latitude', $settings.latitude.toString());
     localStorage.setItem('longitude', $settings.longitude.toString());
     localStorage.setItem('colorScheme', $settings.colorScheme);

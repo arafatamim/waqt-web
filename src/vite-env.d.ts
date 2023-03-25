@@ -8,6 +8,7 @@ type ColorScheme = 'default' | 'dark' | 'light';
 type Settings = {
   timeFormat: string;
   calcMethod: string;
+  city: string | null;
   latitude: number | null;
   longitude: number | null;
   colorScheme: ColorScheme;

@@ -119,6 +119,25 @@ input {
   }
 }
 
+.autocomplete::after {
+  content: '' !important;
+  border: none !important;
+}
+
+.autocomplete-list,
+.dropdown {
+  background-color: var(--bg-color) !important;
+  border: 2px solid var(--control-bg-color-secondary) !important;
+  color: var(--text-color) !important;
+}
+
+.autocomplete-list-item {
+  color: var(--text-color) !important;
+  &.selected {
+    background-color: var(--control-bg-color-secondary) !important;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     --bg-color: #222;

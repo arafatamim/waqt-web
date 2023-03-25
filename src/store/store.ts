@@ -4,6 +4,7 @@ import { CalculationMethod } from 'adhan';
 export const settings = writable<Settings>({
   timeFormat: 'h:mm a',
   calcMethod: CalculationMethod.Karachi().method,
+  city: null,
   latitude: null,
   longitude: null,
   colorScheme: 'default',
@@ -17,3 +18,5 @@ export const times = writable<Prayers>({
   maghrib: null,
   isha: null,
 });
+
+export const citiesData = writable([])

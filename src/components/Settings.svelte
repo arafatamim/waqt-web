@@ -2,18 +2,45 @@
   import { fade, fly } from 'svelte/transition';
   import FaSave from 'svelte-icons/fa/FaSave.svelte';
   import FaGithub from 'svelte-icons/fa/FaGithub.svelte';
-  import { settings } from '../store/store';
+  import { settings, citiesData } from '../store/store';
   import image from '../assets/kofi3.png';
   import { CalculationMethod } from 'adhan';
+  import AutoComplete from 'simple-svelte-autocomplete';
+  import data from '../cities.json';
+  import { onMount } from 'svelte';
 
   export let localTime: Date;
   export let timeZone: string;
 
   export let onClose: () => void;
+
+  let selectedEntry;
+
+  $: if (selectedEntry != null) {
+    $settings.latitude = selectedEntry['lat'];
+    $settings.longitude = selectedEntry['lng'];
+    $settings.city = selectedEntry['displayName'];
+  }
+
+  onMount(() => {
+    if ($citiesData == null || $citiesData.length == 0) {
+      citiesData.set(formatCitiesDatabase());
+    }
+  });
+
+  function formatCitiesDatabase() {
+    return data.map((entry) => {
+      return {
+        displayName: entry[0] + ', ' + entry[1],
+        lat: entry[2],
+        lng: entry[3],
+      };
+    });
+  }
 </script>
 
 <div>
-  <div id="bg" transition:fade on:click={onClose} />
+  <div id="bg" transition:fade on:click={onClose} on:keypress={() => {}} />
   <div id="settings-box" transition:fly={{ duration: 150, y: 100 }}>
     <div id="settings-header">
       <div id="settings-text">Settings</div>
@@ -53,22 +80,40 @@
           <option value={CalculationMethod.Turkey().method}>Turkey</option>
         </select>
       </div>
+      <div class="control">
+        <label for="city-input" class="label">City</label>
+        <AutoComplete
+          items={$citiesData}
+          delay="200"
+          labelFieldName="displayName"
+          bind:value={selectedEntry}
+          dropdownClassName="dropdown"
+          placeholder={$settings.city ?? "Search for the nearest city..."}
+          class="flash"
+        />
+      </div>
       <div class="control" id="latlong">
         <label class="label" for="latlong-controls">Coordinates</label>
         <div class="grouped" id="latlong-controls">
           <span>
             <input
-              type="number"
+              type="text"
               placeholder="Latitude"
               bind:value={$settings.latitude}
+              on:input={() => {
+                $settings.city = null;
+              }}
             />
             °&nbsp;N
           </span>
           <span>
             <input
-              type="number"
+              type="text"
               placeholder="Longitude"
               bind:value={$settings.longitude}
+              on:input={() => {
+                $settings.city = null;
+              }}
             />°&nbsp;E
           </span>
         </div>
@@ -185,9 +230,6 @@
     display: grid;
     grid-row-gap: 12px;
     font-size: 11pt;
-    select {
-      -moz-appearance: none;
-    }
 
     .control {
       display: flex;
@@ -225,6 +267,7 @@
       margin-top: 2px;
     }
   }
+
   @media (max-width: 768px) {
     #settings-box {
       width: 60%;
