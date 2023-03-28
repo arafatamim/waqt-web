@@ -14,7 +14,7 @@
 
   export let onClose: () => void;
 
-  let selectedEntry;
+  let selectedEntry: { displayName: string; lat: number; lng: number };
 
   $: if (selectedEntry != null) {
     $settings.latitude = selectedEntry['lat'];
@@ -83,13 +83,13 @@
       <div class="control">
         <label for="city-input" class="label">City</label>
         <AutoComplete
+          autocomplete="off"
           items={$citiesData}
           delay="200"
           labelFieldName="displayName"
           bind:value={selectedEntry}
           dropdownClassName="dropdown"
-          placeholder={$settings.city ?? "Search for the nearest city..."}
-          class="flash"
+          placeholder={$settings.city ?? 'Search for your nearest city...'}
         />
       </div>
       <div class="control" id="latlong">
@@ -128,8 +128,11 @@
         </select>
       </div>
 
-      <div id="local-time">Local date: {localTime.toLocaleDateString()}</div>
-      <div id="timezone">Timezone: {timeZone}</div>
+      <div class="inset">
+        <div id="local-time">Local date: {localTime.toLocaleDateString()}</div>
+        <div id="timezone">Timezone: {timeZone}</div>
+        <div>Date & time fetched from system settings</div>
+      </div>
       <div id="about-info">
         An app to display current prayer times for the selected location.
         <br />Made with ♥️ by Tamim Arafat.
@@ -265,6 +268,13 @@
     }
     .about-link {
       margin-top: 2px;
+    }
+
+    .inset {
+      background-color: var(--control-bg-color);
+      border-radius: 15px;
+      padding: 10px 15px;
+      color: var(--text-color-light);
     }
   }
 
