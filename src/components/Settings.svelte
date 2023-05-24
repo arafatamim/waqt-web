@@ -2,11 +2,10 @@
   import { fade, fly } from 'svelte/transition';
   import FaSave from 'svelte-icons/fa/FaSave.svelte';
   import FaGithub from 'svelte-icons/fa/FaGithub.svelte';
-  import { settings, citiesData } from '../store/store';
+  import { settings } from '../store/store';
   import image from '../assets/kofi3.png';
   import { CalculationMethod } from 'adhan';
   import AutoComplete from 'simple-svelte-autocomplete';
-  import data from '../cities.json';
   import { onMount } from 'svelte';
 
   export let localTime: Date;
@@ -15,6 +14,7 @@
   export let onClose: () => void;
 
   let selectedEntry: { displayName: string; lat: number; lng: number };
+  let citiesData = [];
 
   $: if (selectedEntry != null) {
     $settings.latitude = selectedEntry['lat'];
@@ -23,20 +23,17 @@
   }
 
   onMount(() => {
-    if ($citiesData == null || $citiesData.length == 0) {
-      citiesData.set(formatCitiesDatabase());
-    }
-  });
-
-  function formatCitiesDatabase() {
-    return data.map((entry) => {
-      return {
-        displayName: entry[0] + ', ' + entry[1],
-        lat: entry[2],
-        lng: entry[3],
-      };
+    import('../cities.json').then((data) => {
+      const cities = data.default.map((entry) => {
+        return {
+          displayName: entry[0] + ', ' + entry[1],
+          lat: entry[2],
+          lng: entry[3],
+        };
+      });
+      citiesData = cities;
     });
-  }
+  });
 </script>
 
 <div>
@@ -83,12 +80,12 @@
       <div class="control">
         <label for="city-input" class="label">City</label>
         <AutoComplete
+          items={citiesData}
           autocomplete="off"
-          items={$citiesData}
-          delay="200"
           labelFieldName="displayName"
-          bind:value={selectedEntry}
+          bind:selectedItem={selectedEntry}
           dropdownClassName="dropdown"
+          create={false}
           placeholder={$settings.city ?? 'Search for your nearest city...'}
         />
       </div>

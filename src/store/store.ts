@@ -18,5 +18,3 @@ export const times = writable<Prayers>({
   maghrib: null,
   isha: null,
 });
-
-export const citiesData = writable([])
