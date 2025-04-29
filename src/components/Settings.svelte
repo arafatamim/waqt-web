@@ -37,8 +37,8 @@
 </script>
 
 <div>
-  <div id="bg" transition:fade on:click={onClose} on:keypress={() => {}} />
-  <div id="settings-box" transition:fly={{ duration: 150, y: 100 }}>
+  <div id="bg" transition:fade|global on:click={onClose} on:keypress={() => {}} />
+  <div id="settings-box" transition:fly|global={{ duration: 150, y: 100 }}>
     <div id="settings-header">
       <div id="settings-text">Settings</div>
       <button on:click={onClose} title="Save and close">

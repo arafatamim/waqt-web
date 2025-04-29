@@ -7,7 +7,7 @@
   export let message: string = 'Something went wrong';
 </script>
 
-<div class="error-banner" transition:fly={{ y: 100, duration: 150 }}>
+<div class="error-banner" transition:fly|global={{ y: 100, duration: 150 }}>
   <div class="message">
     <div class="icon">
       <FaTimesCircle />
