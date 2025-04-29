@@ -3,22 +3,15 @@
 
 declare module 'virtual:pwa-register';
 
-type ColorScheme = 'default' | 'dark' | 'light';
+declare module 'simple-svelte-autocomplete';
 
-type Settings = {
-  timeFormat: string;
-  calcMethod: string;
-  city: string | null;
-  latitude: number | null;
-  longitude: number | null;
-  colorScheme: ColorScheme;
-};
+declare module 'svelte-icons/*' {
+  import type { SvelteComponentTyped } from 'svelte';
 
-type Prayers = {
-  fajr: Date;
-  sunrise: Date;
-  dhuhr: Date;
-  asr: Date;
-  maghrib: Date;
-  isha: Date;
-};
+  export default class Icon extends SvelteComponentTyped<{
+    size?: number | string;
+    color?: string;
+    class?: string;
+    [key: string]: any;
+  }> {}
+}

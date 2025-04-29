@@ -3,18 +3,22 @@
   import FaRedo from 'svelte-icons/fa/FaRedo.svelte';
   import FaTimesCircle from 'svelte-icons/fa/FaTimesCircle.svelte';
 
-  export let onReload: () => void;
-  export let message: string = 'Something went wrong';
+  interface Props {
+    onReload: () => void;
+    message?: string;
+  }
+
+  let { onReload, message = 'Something went wrong' }: Props = $props();
 </script>
 
-<div class="error-banner" transition:fly|global={{ y: 100, duration: 150 }}>
+<div class="error-banner" transition:fly={{ y: 100, duration: 150 }}>
   <div class="message">
     <div class="icon">
       <FaTimesCircle />
     </div>
     <span class="banner-text">{message}</span>
   </div>
-  <button id="btn-reload" on:click={onReload}>
+  <button id="btn-reload" onclick={onReload}>
     <div class="icon">
       <FaRedo />
     </div>
@@ -22,7 +26,7 @@
 </div>
 
 <style lang="scss" scoped>
-  @import '../styles/variables';
+  @use '../styles/variables';
 
   .icon {
     width: 1.5rem;

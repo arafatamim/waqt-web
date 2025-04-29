@@ -1,7 +1,6 @@
-@import '_variables.scss';
+@use '_variables.scss';
 
 body {
-  margin: 5;
   background-color: var(--bg-color);
   // transition: background-color 1s;
 }

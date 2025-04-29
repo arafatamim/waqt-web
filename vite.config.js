@@ -40,18 +40,23 @@ const colorSchemeScript = `
 export default defineConfig({
   plugins: [
     svelte({
-      configFile: "./svelte.config.js"
+      configFile: './svelte.config.js',
     }),
     createHtmlPlugin({
       inject: {
         data: {
-          colorSchemeScript
-        }
-      }
+          colorSchemeScript,
+        },
+      },
     }),
     VitePWA({
       registerType: 'autoUpdate',
       manifest,
     }),
   ],
+  resolve: process.env.VITEST
+    ? {
+        conditions: ['browser'],
+      }
+    : undefined,
 });

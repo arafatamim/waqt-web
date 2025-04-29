@@ -1,13 +1,17 @@
 <script lang="ts">
   import FaCog from 'svelte-icons/fa/FaCog.svelte';
 
-  export let onClick: () => void;
+  interface Props {
+    onClick: () => void;
+  }
+
+  let { onClick }: Props = $props();
 </script>
 
 <div id="header-box">
   <div id="header-text">Waqt</div>
 
-  <button title="Settings" on:click={onClick}>
+  <button title="Settings" onclick={onClick}>
     <div class="icon">
       <FaCog />
     </div>
@@ -15,7 +19,7 @@
 </div>
 
 <style lang="scss" scoped>
-  @import '../styles/variables';
+  @use '../styles/variables';
 
   #header-box {
     font-family: var(--base-font);

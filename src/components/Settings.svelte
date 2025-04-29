@@ -8,27 +8,38 @@
   import AutoComplete from 'simple-svelte-autocomplete';
   import { onMount } from 'svelte';
 
-  export let localTime: Date;
-  export let timeZone: string;
+  type CityEntry = {
+    displayName: string;
+    lat: number;
+    lng: number;
+  };
 
-  export let onClose: () => void;
-
-  let selectedEntry: { displayName: string; lat: number; lng: number };
-  let citiesData = [];
-
-  $: if (selectedEntry != null) {
-    $settings.latitude = selectedEntry['lat'];
-    $settings.longitude = selectedEntry['lng'];
-    $settings.city = selectedEntry['displayName'];
+  interface Props {
+    localTime: Date;
+    timeZone: string;
+    onClose: () => void;
   }
+
+  let { localTime, timeZone, onClose }: Props = $props();
+
+  let selectedEntry: CityEntry | null = $state(null);
+  let citiesData = $state<CityEntry[]>([]);
+
+  $effect(() => {
+    if (selectedEntry != null) {
+      $settings.latitude = selectedEntry['lat'];
+      $settings.longitude = selectedEntry['lng'];
+      $settings.city = selectedEntry['displayName'];
+    }
+  });
 
   onMount(() => {
     import('../cities.json').then((data) => {
-      const cities = data.default.map((entry) => {
+      const cities: CityEntry[] = data.default.map((entry) => {
         return {
           displayName: entry[0] + ', ' + entry[1],
-          lat: entry[2],
-          lng: entry[3],
+          lat: Number(entry[2]),
+          lng: Number(entry[3]),
         };
       });
       citiesData = cities;
@@ -37,11 +48,19 @@
 </script>
 
 <div>
-  <div id="bg" transition:fade|global on:click={onClose} on:keypress={() => {}} />
-  <div id="settings-box" transition:fly|global={{ duration: 150, y: 100 }}>
+  <div
+    id="bg"
+    transition:fade
+    onclick={onClose}
+    onkeypress={() => {}}
+    role="dialog"
+    aria-modal="true"
+    tabindex="-1"
+  ></div>
+  <div id="settings-box" transition:fly={{ duration: 150, y: 100 }}>
     <div id="settings-header">
       <div id="settings-text">Settings</div>
-      <button on:click={onClose} title="Save and close">
+      <button onclick={onClose} title="Save and close">
         <div class="icon">
           <FaSave />
         </div>
@@ -97,7 +116,7 @@
               type="text"
               placeholder="Latitude"
               bind:value={$settings.latitude}
-              on:input={() => {
+              oninput={() => {
                 $settings.city = null;
               }}
             />
@@ -108,7 +127,7 @@
               type="text"
               placeholder="Longitude"
               bind:value={$settings.longitude}
-              on:input={() => {
+              oninput={() => {
                 $settings.city = null;
               }}
             />°&nbsp;E
@@ -160,7 +179,7 @@
 </div>
 
 <svelte:window
-  on:keydown={(e) => {
+  onkeydown={(e) => {
     if (e.key === 'Escape') {
       onClose();
     }
@@ -168,7 +187,7 @@
 />
 
 <style lang="scss" scoped>
-  @import '../styles/variables';
+  @use '../styles/variables';
 
   .icon {
     width: 1rem;
@@ -189,6 +208,7 @@
   }
   #settings-box {
     position: fixed;
+    max-width: 720px;
     width: 30%;
     top: 50%;
     left: 50%;

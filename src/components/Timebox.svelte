@@ -2,10 +2,15 @@
   import { format } from 'date-fns';
   import { settings } from '../store/store';
 
-  export let prayerName: string;
-  export let prayerTime: Date;
-  export let timeToNextPrayer: string;
-  export let isNextPrayer: boolean;
+  interface Props {
+    prayerName: string;
+    prayerTime: Date;
+    timeToNextPrayer: string;
+    isNextPrayer: boolean;
+  }
+
+  let { prayerName, prayerTime, timeToNextPrayer, isNextPrayer }: Props =
+    $props();
 </script>
 
 <div
@@ -29,7 +34,8 @@
 </div>
 
 <style lang="scss">
-  @import '../styles/variables';
+  @use '../styles/variables';
+  @use 'sass:map';
 
   .content-box {
     margin: 10px;
@@ -40,37 +46,37 @@
     backdrop-filter: blur(10px);
   }
   .content-box:nth-child(1) {
-    color: map-get($map: $fajr-style, $key: foreground);
-    background: map-get($map: $fajr-style, $key: background);
+    color: map.get($map: variables.$fajr-style, $key: foreground);
+    background: map.get($map: variables.$fajr-style, $key: background);
   }
   .content-box:nth-child(2) {
-    color: map-get($map: $sunrise-style, $key: foreground);
-    background: map-get($map: $sunrise-style, $key: background);
+    color: map.get($map: variables.$sunrise-style, $key: foreground);
+    background: map.get($map: variables.$sunrise-style, $key: background);
   }
   .content-box:nth-child(3) {
-    color: map-get($map: $dhuhr-style, $key: foreground);
-    background: map-get($map: $dhuhr-style, $key: background);
+    color: map.get($map: variables.$dhuhr-style, $key: foreground);
+    background: map.get($map: variables.$dhuhr-style, $key: background);
   }
   .content-box:nth-child(4) {
-    color: map-get($map: $asr-style, $key: foreground);
-    background: map-get($map: $asr-style, $key: background);
+    color: map.get($map: variables.$asr-style, $key: foreground);
+    background: map.get($map: variables.$asr-style, $key: background);
   }
   .content-box:nth-child(5) {
-    color: map-get($map: $maghrib-style, $key: foreground);
-    background: map-get($map: $maghrib-style, $key: background);
+    color: map.get($map: variables.$maghrib-style, $key: foreground);
+    background: map.get($map: variables.$maghrib-style, $key: background);
     backdrop-filter: blur(90px);
   }
   .content-box:nth-child(6) {
-    color: map-get($map: $isha-style, $key: foreground);
-    background: map-get($map: $isha-style, $key: background);
+    color: map.get($map: variables.$isha-style, $key: foreground);
+    background: map.get($map: variables.$isha-style, $key: background);
   }
   .waqt-name {
     font-family: var(--base-font);
     font-size: 20pt;
     white-space: nowrap;
     overflow: auto;
-    -ms-overflow-style: none;  /* Internet Explorer 10+ */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none; /* Firefox */
     opacity: 80%;
 
     &::-webkit-scrollbar {
@@ -82,6 +88,7 @@
     margin-top: 20px;
     font-family: var(--base-font);
     font-size: 40pt;
+    font-weight: bold;
     white-space: nowrap;
     overflow: auto;
   }
@@ -96,8 +103,10 @@
   }
   .active {
     z-index: 99;
-    box-shadow: 0 0 25px 2px white, inset 0 0 30px 2px rgba(255, 255, 255, 0.5);
-    @include backlight(
+    box-shadow:
+      0 0 25px 2px white,
+      inset 0 0 30px 2px rgba(255, 255, 255, 0.5);
+    @include variables.backlight(
       0,
       0,
       5vw,

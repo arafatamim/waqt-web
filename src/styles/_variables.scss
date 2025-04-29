@@ -1,3 +1,5 @@
+@use 'sass:map';
+
 :root {
   --bg-color: #eeeeee00;
   --text-color: #333;
@@ -33,28 +35,52 @@ $bg-color: (
   dark: #222,
 );
 $fajr-style: (
-  background: linear-gradient(135deg, var(--fajr-color) 0%, var(--fajr-color-secondary) 100%),
-  foreground: map-get($text-color, dark),
+  background: linear-gradient(
+      135deg,
+      var(--fajr-color) 0%,
+      var(--fajr-color-secondary) 100%
+    ),
+  foreground: map.get($text-color, dark),
 );
 $sunrise-style: (
-  background: linear-gradient(315deg, var(--sunrise-color) 0%, var(--sunrise-color-secondary) 74%),
-  foreground: map-get($text-color, light),
+  background: linear-gradient(
+      315deg,
+      var(--sunrise-color) 0%,
+      var(--sunrise-color-secondary) 74%
+    ),
+  foreground: map.get($text-color, light),
 );
 $dhuhr-style: (
-  background: linear-gradient(315deg, var(--dhuhr-color) 0%, var(--dhuhr-color-secondary) 74%),
-  foreground: map-get($text-color, light),
+  background: linear-gradient(
+      315deg,
+      var(--dhuhr-color) 0%,
+      var(--dhuhr-color-secondary) 74%
+    ),
+  foreground: map.get($text-color, light),
 );
 $asr-style: (
-  background: linear-gradient(315deg, var(--asr-color) 0%, var(--asr-color-secondary) 74%),
-  foreground: map-get($text-color, light),
+  background: linear-gradient(
+      315deg,
+      var(--asr-color) 0%,
+      var(--asr-color-secondary) 74%
+    ),
+  foreground: map.get($text-color, light),
 );
 $maghrib-style: (
-  background: linear-gradient(315deg, var(--maghrib-color) 0%, var(--maghrib-color-secondary) 74%),
-  foreground: map-get($text-color, dark),
+  background: linear-gradient(
+      315deg,
+      var(--maghrib-color) 0%,
+      var(--maghrib-color-secondary) 74%
+    ),
+  foreground: map.get($text-color, dark),
 );
 $isha-style: (
-  background: linear-gradient(315deg, var(--isha-color) 0%, var(--isha-color-secondary) 74%),
-  foreground: map-get($text-color, dark),
+  background: linear-gradient(
+      315deg,
+      var(--isha-color) 0%,
+      var(--isha-color-secondary) 74%
+    ),
+  foreground: map.get($text-color, dark),
 );
 
 @mixin backlight($x, $y, $spread, $size, $colorA, $colorB, $duration) {
@@ -72,7 +98,7 @@ $isha-style: (
     -webkit-filter: blur($spread);
     -moz-filter: blur($spread);
     -ms-filter: blur($spread);
-    filter:  blur($spread);
+    filter: blur($spread);
     background: linear-gradient(270deg, $colorA, $colorB);
     background-size: 200% 200%;
     animation: animateGlow $duration ease infinite;
@@ -90,4 +116,3 @@ $isha-style: (
     }
   }
 }
-

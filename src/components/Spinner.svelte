@@ -1,7 +1,7 @@
 <div>
-  <div id="bg" />
+  <div id="bg"></div>
   <div id="container">
-    <div class="donut" />
+    <div class="donut"></div>
   </div>
 </div>
 

@@ -3,7 +3,12 @@
   import { PrayerTimes, Prayer, CalculationMethod, Coordinates } from 'adhan';
   import type { ValueOf } from 'adhan/lib/types/TypeUtils';
   import { formatDistanceStrict } from 'date-fns';
-  import { times, settings } from './store/store';
+  import {
+    times,
+    settings,
+    type ColorScheme,
+    type CalculationMethodType,
+  } from './store/store';
   import Snackbar from './components/Snackbar.svelte';
   import Headerbox from './components/Headerbox.svelte';
   import Timebox from './components/Timebox.svelte';
@@ -20,16 +25,18 @@
     'Maghrib',
     'Isha',
   ] as const;
+
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
   // Update times every set interval
   const interval = setInterval(() => setTimes().catch(setError), 60 * 1000);
 
-  let localTime: Date = new Date();
-  let nextPrayer: Prayer = Prayer.None;
-  let timeToNextPrayer: string;
-  let snackbar = false;
-  let dialog = false;
-  let error: string;
+  let localTime: Date = $state(new Date());
+  let nextPrayer: Prayer = $state(Prayer.None);
+  let timeToNextPrayerStr: string = $state('');
+  let snackbar = $state(false);
+  let dialog = $state(false);
+  let error: string | null = $state(null);
 
   function setError(e: any) {
     console.error(e);
@@ -38,15 +45,14 @@
   }
 
   const calculateShadows = () => {
-    let light: HTMLDivElement | undefined =
-      document.querySelector<HTMLDivElement>('.active');
+    let light = document.querySelector<HTMLDivElement>('.active');
     let muted = document.querySelectorAll<HTMLDivElement>('.muted');
     if (light == null) {
       return;
     }
     const pos = light.getBoundingClientRect();
-    const lightX = (pos.left + pos.right) / 2,
-      lightY = (pos.top + pos.bottom) / 2;
+    const lightX = (pos.left + pos.right) / 2;
+    const lightY = (pos.top + pos.bottom) / 2;
     light.style.boxShadow = ''; // reset existing shadow before redrawing
     for (const el of muted) {
       el.style.boxShadow = ''; // reset shadow
@@ -56,11 +62,11 @@
     }
   };
 
-  $: {
+  $effect(() => {
     if (nextPrayer != null && nextPrayer != Prayer.None) {
       setTimeout(() => calculateShadows());
     }
-  }
+  });
 
   const resizeHandler = () => {
     if (nextPrayer != null && nextPrayer != Prayer.None) {
@@ -75,7 +81,7 @@
       $settings = {
         colorScheme: localStorage.getItem('colorScheme') as ColorScheme,
         timeFormat: localStorage.getItem('timeFormat')!,
-        calcMethod: localStorage.getItem('calcMethod')!,
+        calcMethod: localStorage.getItem('calcMethod') as CalculationMethodType,
         city: localStorage.getItem('city') ?? null,
         latitude: Number(localStorage.getItem('latitude')!),
         longitude: Number(localStorage.getItem('longitude')!),
@@ -113,9 +119,11 @@
   function saveToStorage() {
     localStorage.setItem('timeFormat', $settings.timeFormat);
     localStorage.setItem('calcMethod', $settings.calcMethod);
-    localStorage.setItem('city', $settings.city);
-    localStorage.setItem('latitude', $settings.latitude.toString());
-    localStorage.setItem('longitude', $settings.longitude.toString());
+    if ($settings.city != null) localStorage.setItem('city', $settings.city);
+    if ($settings.latitude != null && $settings.longitude != null) {
+      localStorage.setItem('latitude', $settings.latitude.toString());
+      localStorage.setItem('longitude', $settings.longitude.toString());
+    }
     localStorage.setItem('colorScheme', $settings.colorScheme);
   }
 
@@ -147,11 +155,11 @@
       throw new Error('Location is not set. Specify coordinates in settings.');
     }
 
-    // Define the settings for adhan
+    // Define the settings for adhan library
     const prayerTimes = new PrayerTimes(
       new Coordinates(latitude, longitude),
       localTime,
-      CalculationMethod[$settings.calcMethod]()
+      CalculationMethod[$settings.calcMethod](),
     );
 
     const { fajr, sunrise, dhuhr, asr, maghrib, isha } = prayerTimes;
@@ -164,21 +172,21 @@
         '--glow-color',
         `var(--${
           prayerEnumToString(nextPrayer)?.toLowerCase() ?? 'noop'
-        }-color)`
+        }-color)`,
       );
       document.documentElement.style.setProperty(
         '--glow-color-secondary',
         `var(--${
           prayerEnumToString(nextPrayer)?.toLowerCase() ?? 'noop'
-        }-color-secondary)`
+        }-color-secondary)`,
       );
     }
     if (nextPrayer !== Prayer.None) {
       const nextPrayerTime = prayerTimes.timeForPrayer(nextPrayer);
-      if (isNaN(nextPrayerTime.getTime())) {
+      if (nextPrayerTime == null || isNaN(nextPrayerTime.getTime())) {
         return;
       }
-      timeToNextPrayer = formatDistanceStrict(nextPrayerTime, localTime, {
+      timeToNextPrayerStr = formatDistanceStrict(nextPrayerTime, localTime, {
         addSuffix: true,
         roundingMethod: 'round',
       });
@@ -205,20 +213,20 @@
   }
 
   /** Coarse approximation of method from timezone */
-  function determineCalcMethod(): string {
+  function determineCalcMethod(): CalculationMethodType {
     const utcOffset = -(localTime.getTimezoneOffset() / 60);
     if (utcOffset >= 0 && utcOffset <= 2) {
-      return CalculationMethod.MuslimWorldLeague().method;
+      return 'MuslimWorldLeague';
     } else if (utcOffset >= 3 && utcOffset <= 4) {
-      return CalculationMethod.UmmAlQura().method;
+      return 'UmmAlQura';
     } else if (utcOffset >= 5 && utcOffset <= 7) {
-      return CalculationMethod.Karachi().method;
+      return 'Karachi';
     } else if (utcOffset >= 8 && utcOffset <= 12) {
-      return CalculationMethod.MuslimWorldLeague().method;
+      return 'MuslimWorldLeague';
     } else if (utcOffset <= -5 && utcOffset >= -9) {
-      return CalculationMethod.MoonsightingCommittee().method;
+      return 'MoonsightingCommittee';
     } else {
-      return CalculationMethod.MuslimWorldLeague().method;
+      return 'MuslimWorldLeague';
     }
   }
 
@@ -226,7 +234,7 @@
     return new Promise<[lat: number, long: number]>((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(
         ({ coords }) => resolve([coords.latitude, coords.longitude]),
-        reject
+        reject,
       );
     });
   }
@@ -248,12 +256,15 @@
   <Headerbox onClick={() => (dialog = true)} />
   <div class="content-boxes">
     {#each prayers as prayer}
-      <Timebox
-        prayerName={prayer}
-        prayerTime={$times[prayer?.toLowerCase()]}
-        isNextPrayer={prayerEnumToString(nextPrayer) === prayer}
-        {timeToNextPrayer}
-      />
+      {@const prayerTime = $times[prayer.toLowerCase() as keyof typeof $times]}
+      {#if prayerTime != null}
+        <Timebox
+          prayerName={prayer}
+          {prayerTime}
+          isNextPrayer={prayerEnumToString(nextPrayer) === prayer}
+          timeToNextPrayer={timeToNextPrayerStr}
+        />
+      {/if}
     {/each}
   </div>
 </div>
@@ -263,6 +274,10 @@
 {/if}
 
 <style lang="scss">
+  #boss-container {
+    max-width: 1120px;
+  }
+
   .content-boxes {
     display: grid;
     grid-template-columns: repeat(3, 33.3%);
