@@ -14,6 +14,7 @@
     "@fontsource/poppins": "^5.2.7",
     "adhan": "^4.4.3",
     "date-fns": "^4.1.0",
+    "figma-squircle": "^1.1.0",
     "ombro": "^0.0.4",
     "simple-svelte-autocomplete": "^2.5.2",
     "svelte-icons": "^2.1.0"

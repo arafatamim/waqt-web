@@ -1,6 +1,7 @@
 <script lang="ts">
   import { format } from 'date-fns';
   import { settings } from '../store/store';
+  import { getSvgPath } from 'figma-squircle';
 
   interface Props {
     prayerName: string;
@@ -11,13 +12,35 @@
 
   let { prayerName, prayerTime, timeToNextPrayer, isNextPrayer }: Props =
     $props();
+
+  let width = $state(0);
+  let height = $state(0);
+  let squirclePath = $derived(
+    width && height
+      ? getSvgPath({
+          width,
+          height,
+          cornerRadius: 40, // iOS standard ratio (approx 22% of the 190px height)
+          cornerSmoothing: 0.85, // Stronger, more visible continuous curvature transition
+        })
+      : ''
+  );
 </script>
 
 <div
   class="content-box"
   class:active={isNextPrayer}
   class:muted={!isNextPrayer}
+  bind:clientWidth={width}
+  bind:clientHeight={height}
 >
+  <svg class="content-box-bg" style="clip-path: url(#clip-{prayerName})">
+    <defs>
+      <clipPath id="clip-{prayerName}">
+        <path d={squirclePath} />
+      </clipPath>
+    </defs>
+  </svg>
   <div class="waqt-name">
     {prayerName}
     {#if isNextPrayer}
@@ -38,38 +61,62 @@
   @use 'sass:map';
 
   .content-box {
+    position: relative;
     margin: 10px;
     padding: 25px;
     color: white;
     z-index: 1;
-    border-radius: 1.4rem;
-    backdrop-filter: blur(10px);
+    border-radius: 64px;
   }
+
+  .content-box-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    backdrop-filter: blur(10px);
+    transition: background 0.3s, backdrop-filter 0.3s;
+  }
+
   .content-box:nth-child(1) {
     color: map.get($map: variables.$fajr-style, $key: foreground);
-    background: map.get($map: variables.$fajr-style, $key: background);
+    .content-box-bg {
+      background: map.get($map: variables.$fajr-style, $key: background);
+    }
   }
   .content-box:nth-child(2) {
     color: map.get($map: variables.$sunrise-style, $key: foreground);
-    background: map.get($map: variables.$sunrise-style, $key: background);
+    .content-box-bg {
+      background: map.get($map: variables.$sunrise-style, $key: background);
+    }
   }
   .content-box:nth-child(3) {
     color: map.get($map: variables.$dhuhr-style, $key: foreground);
-    background: map.get($map: variables.$dhuhr-style, $key: background);
+    .content-box-bg {
+      background: map.get($map: variables.$dhuhr-style, $key: background);
+    }
   }
   .content-box:nth-child(4) {
     color: map.get($map: variables.$asr-style, $key: foreground);
-    background: map.get($map: variables.$asr-style, $key: background);
+    .content-box-bg {
+      background: map.get($map: variables.$asr-style, $key: background);
+    }
   }
   .content-box:nth-child(5) {
     color: map.get($map: variables.$maghrib-style, $key: foreground);
-    background: map.get($map: variables.$maghrib-style, $key: background);
-    backdrop-filter: blur(90px);
+    .content-box-bg {
+      background: map.get($map: variables.$maghrib-style, $key: background);
+      backdrop-filter: blur(90px);
+    }
   }
   .content-box:nth-child(6) {
     color: map.get($map: variables.$isha-style, $key: foreground);
-    background: map.get($map: variables.$isha-style, $key: background);
+    .content-box-bg {
+      background: map.get($map: variables.$isha-style, $key: background);
+    }
   }
+
   .waqt-name {
     font-family: var(--base-font);
     font-size: 20pt;
@@ -103,9 +150,7 @@
   }
   .active {
     z-index: 99;
-    box-shadow:
-      0 0 25px 2px white,
-      inset 0 0 30px 2px rgba(255, 255, 255, 0.5);
+    filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.75));
     @include variables.backlight(
       0,
       0,
@@ -115,6 +160,10 @@
       var(--glow-color-secondary),
       10s
     );
+
+    .content-box-bg {
+      box-shadow: inset 0 0 30px 2px rgba(255, 255, 255, 0.5);
+    }
   }
   .muted {
     filter: grayscale(80%) opacity(50%);
