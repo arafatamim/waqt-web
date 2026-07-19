@@ -2,6 +2,10 @@ allowBuilds:
   '@parcel/watcher': true
   esbuild: true
 
+minimumReleaseAgeExclude:
+  - '@fontsource/poppins@5.3.0'
+  - eslint-plugin-svelte@3.21.0
+
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - esbuild
