@@ -37,6 +37,7 @@
   let snackbar = $state(false);
   let dialog = $state(false);
   let error: string | null = $state(null);
+  let notifiedPrayers = new Set<string>();
 
   function setError(e: any) {
     console.error(e);
@@ -76,6 +77,11 @@
 
   onMount(() => {
     window.addEventListener('resize', resizeHandler);
+
+    // Request notification permission
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
 
     if (localStorage.getItem('timeFormat') != null) {
       $settings = {
@@ -190,6 +196,18 @@
         addSuffix: true,
         roundingMethod: 'round',
       });
+
+      const diff = nextPrayerTime.getTime() - localTime.getTime();
+      const prayerName = prayerEnumToString(nextPrayer);
+      if (diff <= 5 * 60 * 1000 && diff >= 0 && prayerName && !notifiedPrayers.has(prayerName)) {
+        notifiedPrayers.add(prayerName);
+        if (Notification.permission === 'granted') {
+          new Notification(`${prayerName} Time`, {
+            body: `${prayerName} is approaching.`,
+            icon: '/img/icons/android-chrome-192x192.png',
+          });
+        }
+      }
     }
   }
 
